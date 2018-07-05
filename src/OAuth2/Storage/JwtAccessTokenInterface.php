@@ -10,5 +10,4 @@ namespace OAuth2\Storage;
  */
 interface JwtAccessTokenInterface extends AccessTokenInterface
 {
-
 }

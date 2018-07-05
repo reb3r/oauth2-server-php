@@ -15,7 +15,8 @@ use OAuth2\OpenID\Storage\AuthorizationCodeInterface as OpenIDAuthorizationCodeI
  *  $storage->setClientDetails($client_id, $client_secret, $redirect_uri);
  * </code>
  */
-class Redis implements AuthorizationCodeInterface,
+class Redis implements
+    AuthorizationCodeInterface,
     AccessTokenInterface,
     ClientCredentialsInterface,
     UserCredentialsInterface,
@@ -24,7 +25,6 @@ class Redis implements AuthorizationCodeInterface,
     ScopeInterface,
     OpenIDAuthorizationCodeInterface
 {
-
     private $cache;
 
     /* The redis client */
@@ -55,11 +55,11 @@ class Redis implements AuthorizationCodeInterface,
 
     protected function getValue($key)
     {
-        if ( isset($this->cache[$key]) ) {
+        if (isset($this->cache[$key])) {
             return $this->cache[$key];
         }
         $value = $this->redis->get($key);
-        if ( isset($value) ) {
+        if (isset($value)) {
             return json_decode($value, true);
         } else {
             return false;

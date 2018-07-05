@@ -43,7 +43,7 @@ class JwtAccessTokenTest extends TestCase
     
     public function testExtraPayloadCallback()
     {
-        $jwtconfig = array('jwt_extra_payload_callable' => function() {
+        $jwtconfig = array('jwt_extra_payload_callable' => function () {
             return array('custom_param' => 'custom_value');
         });
         

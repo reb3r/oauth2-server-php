@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 
 class IdTokenTokenTest extends TestCase
 {
-
     public function testHandleAuthorizeRequest()
     {
         // add the test parameters in memory

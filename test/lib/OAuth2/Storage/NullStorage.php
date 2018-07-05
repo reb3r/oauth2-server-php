@@ -24,7 +24,7 @@ class NullStorage extends Memory
     public function getMessage()
     {
         if ($this->description) {
-             return $this->description;
+            return $this->description;
         }
 
         return $this->name;

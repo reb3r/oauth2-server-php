@@ -45,7 +45,8 @@ use LogicException;
 * @see \OAuth2\Controller\AuthorizeController
 * @see \OAuth2\Controller\TokenController
 */
-class Server implements ResourceControllerInterface,
+class Server implements
+    ResourceControllerInterface,
     AuthorizeControllerInterface,
     TokenControllerInterface,
     UserInfoControllerInterface

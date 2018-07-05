@@ -269,7 +269,6 @@ class Response implements ResponseInterface
         }
 
         throw new InvalidArgumentException(sprintf('The format %s is not supported', $format));
-
     }
 
     /**
