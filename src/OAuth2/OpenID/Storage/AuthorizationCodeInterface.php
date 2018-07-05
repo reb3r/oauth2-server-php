@@ -3,6 +3,7 @@
 namespace OAuth2\OpenID\Storage;
 
 use OAuth2\Storage\AuthorizationCodeInterface as BaseAuthorizationCodeInterface;
+
 /**
  * Implement this interface to specify where the OAuth2 Server
  * should get/save authorization codes for the "Authorization Code"

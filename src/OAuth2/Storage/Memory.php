@@ -13,7 +13,8 @@ use OAuth2\OpenID\Storage\AuthorizationCodeInterface as OpenIDAuthorizationCodeI
  *
  * @author Brent Shaffer <bshafs at gmail dot com>
  */
-class Memory implements AuthorizationCodeInterface,
+class Memory implements
+    AuthorizationCodeInterface,
     UserCredentialsInterface,
     UserClaimsInterface,
     AccessTokenInterface,

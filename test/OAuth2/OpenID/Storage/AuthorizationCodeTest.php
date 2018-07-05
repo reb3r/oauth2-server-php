@@ -66,7 +66,7 @@ class AuthorizationCodeTest extends BaseTest
         $this->assertEquals($code['id_token'], $new_id_token);
     }
 
-        /** @dataProvider provideStorage */
+    /** @dataProvider provideStorage */
     public function testRemoveIdTokenFromAuthorizationCode($storage)
     {
         // add new code

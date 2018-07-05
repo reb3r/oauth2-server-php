@@ -10,7 +10,10 @@ use OAuth2\RequestInterface;
 */
 class TestRequest extends Request implements RequestInterface
 {
-    public $query, $request, $server, $headers;
+    public $query;
+    public $request;
+    public $server;
+    public $headers;
 
     public function __construct()
     {

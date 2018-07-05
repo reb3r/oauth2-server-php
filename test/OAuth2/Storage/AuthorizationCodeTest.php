@@ -77,7 +77,7 @@ class AuthorizationCodeTest extends BaseTest
         $this->assertTrue($success);
     }
 
-        /** @dataProvider provideStorage */
+    /** @dataProvider provideStorage */
     public function testExpireAccessToken(AccessTokenInterface $storage)
     {
         if ($storage instanceof NullStorage) {

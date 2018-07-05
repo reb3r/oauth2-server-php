@@ -1,6 +1,8 @@
 <?php
 
-namespace OAuth2;use PHPUnit\Framework\TestCase;
+namespace OAuth2;
+
+use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
