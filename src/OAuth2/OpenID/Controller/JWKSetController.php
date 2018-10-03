@@ -9,7 +9,6 @@ use phpseclib\Crypt\RSA;
 
 class JWKSetController implements JWKSetControllerInterface
 {
-
     protected $publicKeyStorage;
 
     public function __construct(PublicKeyInterface $publicKeyStorage)

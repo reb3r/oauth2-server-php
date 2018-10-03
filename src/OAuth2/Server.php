@@ -173,7 +173,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *            The scope utility class to use to validate scope
      * @param ClientAssertionTypeInterface $clientAssertionType
      *            The method in which to verify the client identity. Default is HttpBasic
-     *            
+     *
      * @ingroup oauth2_section_7
      */
     public function __construct($storage = array(), array $config = array(), array $grantTypes = array(), array $responseTypes = array(), TokenTypeInterface $tokenType = null, ScopeInterface $scopeUtil = null, ClientAssertionTypeInterface $clientAssertionType = null)
@@ -433,7 +433,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *            end-user authorization step is completed.
      *            - scope: (optional) The scope of the resource request expressed as a list of space-delimited strings.
      *            - state: (optional) An opaque value used by the client to maintain state between the request and callback.
-     *            
+     *
      * @param ResponseInterface $response
      *            - Response object
      * @param bool $is_authorized
@@ -470,7 +470,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *            - Response object
      * @return bool The authorization parameters so the authorization server can prompt
      *         the user for approval if valid.
-     *        
+     *
      * @see http://tools.ietf.org/html/rfc6749#section-4.1.1
      * @see http://tools.ietf.org/html/rfc6749#section-10.12
      *
@@ -560,7 +560,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *            - An object implementing one of the Storage interfaces
      * @param mixed $key
      *            - If null, the storage is set to the key of each storage interface it implements
-     *            
+     *
      * @throws InvalidArgumentException
      * @see storageMap
      */
