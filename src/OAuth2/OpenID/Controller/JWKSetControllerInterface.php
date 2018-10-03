@@ -27,4 +27,3 @@ interface JWKSetControllerInterface
      */
     public function validateJWKSetRequest(RequestInterface $request, ResponseInterface $response);
 }
-
