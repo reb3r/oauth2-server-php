@@ -388,11 +388,10 @@ class Memory implements
     /*ConfigurationInterface*/
     public function getDiscoveryConfiguration()
     {
-        if(isset($this->discoveryConfiguration)){
+        if (isset($this->discoveryConfiguration)) {
             return $this->discoveryConfiguration;
         }
         
         return false;
     }
-
 }

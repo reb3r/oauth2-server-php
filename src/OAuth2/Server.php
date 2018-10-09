@@ -100,7 +100,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     
     
     /**
-     * 
+     *
      * @var DiscoveryControllerInterface
      */
     protected $discoveryController;
@@ -298,12 +298,12 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     }
     
     /**
-     * 
+     *
      * @return DiscoveryController
      */
     public function getDiscoveryController()
     {
-        if(is_null($this->discoveryController)){
+        if (is_null($this->discoveryController)) {
             $this->discoveryController = $this->createDefaultDiscoveryController();
         }
         return $this->discoveryController;
@@ -355,10 +355,11 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     }
     
     /**
-     * 
+     *
      * @param DiscoveryControllerInterface $discoveryController
      */
-    public function setDiscoveryController(DiscoveryControllerInterface $discoveryController){
+    public function setDiscoveryController(DiscoveryControllerInterface $discoveryController)
+    {
         $this->discoveryController = $discoveryController;
     }
 
@@ -529,14 +530,16 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         return $value;
     }
     
-    public function handleConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response){
+    public function handleConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response)
+    {
         $this->response = is_null($response) ? new Response() : $response;
         $this->getDiscoveryController()->handleConfigurationDiscoveryRequest($request, $response);
         
         return $this->response;
     }
     
-    public function validateConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response){
+    public function validateConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response)
+    {
         $this->response = is_null($response) ? new Response() : $response;
         $value = $this->getDiscoveryController()->validateConfigurationDiscoveryRequest($request, $response);
         

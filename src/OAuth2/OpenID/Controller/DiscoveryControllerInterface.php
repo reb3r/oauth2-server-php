@@ -30,4 +30,3 @@ interface DiscoveryControllerInterface
      */
     public function validateConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response);
 }
-
