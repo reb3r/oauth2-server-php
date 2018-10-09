@@ -4,6 +4,7 @@ namespace OAuth2\Storage;
 
 use OAuth2\OpenID\Storage\UserClaimsInterface;
 use OAuth2\OpenID\Storage\AuthorizationCodeInterface as OpenIDAuthorizationCodeInterface;
+use OAuth2\OpenID\Storage\DiscoveryConfigurationInterface;
 
 /**
  * Simple in-memory storage for all storage types
@@ -23,7 +24,8 @@ class Memory implements
     JwtBearerInterface,
     ScopeInterface,
     PublicKeyInterface,
-    OpenIDAuthorizationCodeInterface
+    OpenIDAuthorizationCodeInterface,
+    DiscoveryConfigurationInterface
 {
     public $authorizationCodes;
     public $userCredentials;
@@ -35,6 +37,7 @@ class Memory implements
     public $supportedScopes;
     public $defaultScope;
     public $keys;
+    public $discoveryConfiguration;
 
     public function __construct($params = array())
     {
@@ -49,6 +52,7 @@ class Memory implements
             'default_scope' => null,
             'supported_scopes' => array(),
             'keys' => array(),
+            'discovery_configuration' => array()
         ), $params);
 
         $this->authorizationCodes = $params['authorization_codes'];
@@ -61,6 +65,7 @@ class Memory implements
         $this->supportedScopes = $params['supported_scopes'];
         $this->defaultScope = $params['default_scope'];
         $this->keys = $params['keys'];
+        $this->discoveryConfiguration = $params['discovery_configuration'];
     }
 
     /* AuthorizationCodeInterface */
@@ -379,4 +384,15 @@ class Memory implements
 
         return 'RS256';
     }
+    
+    /*ConfigurationInterface*/
+    public function getDiscoveryConfiguration()
+    {
+        if(isset($this->discoveryConfiguration)){
+            return $this->discoveryConfiguration;
+        }
+        
+        return false;
+    }
+
 }

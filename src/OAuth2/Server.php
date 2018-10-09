@@ -15,6 +15,7 @@ use OAuth2\GrantType\GrantTypeInterface;
 use OAuth2\GrantType\RefreshToken;
 use OAuth2\GrantType\UserCredentials;
 use OAuth2\OpenID\Controller\AuthorizeController as OpenIDAuthorizeController;
+use OAuth2\OpenID\Controller\DiscoveryController;
 use OAuth2\OpenID\Controller\JWKSetController;
 use OAuth2\OpenID\Controller\JWKSetControllerInterface;
 use OAuth2\OpenID\Controller\UserInfoController;
@@ -36,6 +37,7 @@ use OAuth2\Storage\JwtAccessTokenInterface;
 use OAuth2\TokenType\Bearer;
 use OAuth2\TokenType\TokenTypeInterface;
 use LogicException;
+use OAuth2\OpenID\Controller\DiscoveryControllerInterface;
 
 /**
  * Server class for OAuth2
@@ -45,7 +47,7 @@ use LogicException;
  * @see \OAuth2\Controller\AuthorizeController
  * @see \OAuth2\Controller\TokenController
  */
-class Server implements ResourceControllerInterface, AuthorizeControllerInterface, TokenControllerInterface, UserInfoControllerInterface, JWKSetControllerInterface
+class Server implements ResourceControllerInterface, AuthorizeControllerInterface, TokenControllerInterface, UserInfoControllerInterface, JWKSetControllerInterface, DiscoveryControllerInterface
 {
 
     /**
@@ -95,6 +97,13 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      * @var JWKSetControllerInterface
      */
     protected $jwkSetController;
+    
+    
+    /**
+     * 
+     * @var DiscoveryControllerInterface
+     */
+    protected $discoveryController;
 
     /**
      *
@@ -140,7 +149,8 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         'user_claims' => 'OAuth2\OpenID\Storage\UserClaimsInterface',
         'public_key' => 'OAuth2\Storage\PublicKeyInterface',
         'jwt_bearer' => 'OAuth2\Storage\JWTBearerInterface',
-        'scope' => 'OAuth2\Storage\ScopeInterface'
+        'scope' => 'OAuth2\Storage\ScopeInterface',
+        'discovery_configuration' => 'OAuth2\OpenID\Storage\DiscoveryConfigurationInterface'
     );
 
     /**
@@ -276,7 +286,6 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     }
 
     /**
-     * UserInfo
      *
      * @return JWKSetController
      */
@@ -286,6 +295,18 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
             $this->jwkSetController = $this->createDefaultJWKSetController();
         }
         return $this->jwkSetController;
+    }
+    
+    /**
+     * 
+     * @return DiscoveryController
+     */
+    public function getDiscoveryController()
+    {
+        if(is_null($this->discoveryController)){
+            $this->discoveryController = $this->createDefaultDiscoveryController();
+        }
+        return $this->discoveryController;
     }
 
     /**
@@ -328,9 +349,17 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *
      * @param JWKSetController $jwkController
      */
-    public function setJWKController(JWKSetController $jwkSetController)
+    public function setJWKController(JWKSetControllerInterface $jwkSetController)
     {
         $this->jwkSetController = $jwkSetController;
+    }
+    
+    /**
+     * 
+     * @param DiscoveryControllerInterface $discoveryController
+     */
+    public function setDiscoveryController(DiscoveryControllerInterface $discoveryController){
+        $this->discoveryController = $discoveryController;
     }
 
     /**
@@ -495,8 +524,22 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     public function validateJWKSetRequest(RequestInterface $request, ResponseInterface $response)
     {
         $this->response = is_null($response) ? new Response() : $response;
-        $value = $this->getJWKSetController()->handleJWKSetRequest($request, $response);
+        $value = $this->getJWKSetController()->validateJWKSetRequest($request, $response);
 
+        return $value;
+    }
+    
+    public function handleConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response){
+        $this->response = is_null($response) ? new Response() : $response;
+        $this->getDiscoveryController()->handleConfigurationDiscoveryRequest($request, $response);
+        
+        return $this->response;
+    }
+    
+    public function validateConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response){
+        $this->response = is_null($response) ? new Response() : $response;
+        $value = $this->getDiscoveryController()->validateConfigurationDiscoveryRequest($request, $response);
+        
         return $value;
     }
 
@@ -780,6 +823,11 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     protected function createDefaultJWKSetController()
     {
         return new JWKSetController($this->storages['public_key']);
+    }
+    
+    protected function createDefaultDiscoveryController()
+    {
+        return new DiscoveryController($this->storages['discovery_configuration']);
     }
 
     /**
