@@ -7,7 +7,6 @@ use OAuth2\OpenID\Storage\DiscoveryConfigurationInterface;
 
 class DiscoveryController implements DiscoveryControllerInterface
 {
-
     protected $configurationStorage;
 
     public function __construct(DiscoveryConfigurationInterface $configurationStorage)
