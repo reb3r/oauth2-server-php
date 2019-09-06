@@ -113,8 +113,8 @@ class Response implements ResponseInterface
         }
 
         return
-            sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText)."\r\n".
-            $this->getHttpHeadersAsString($headers)."\r\n".
+            sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText) . "\r\n" .
+            $this->getHttpHeadersAsString($headers) . "\r\n" .
             $this->getResponseBody();
     }
 
@@ -144,7 +144,7 @@ class Response implements ResponseInterface
      * @param string $text
      * @throws InvalidArgumentException
      */
-    public function setStatusCode($statusCode, $text = null)
+    public function setStatusCode(int $statusCode, $text = null)
     {
         $this->statusCode = (int) $statusCode;
         if ($this->isInvalid()) {
@@ -455,7 +455,7 @@ class Response implements ResponseInterface
         ksort($headers);
         foreach ($headers as $name => $values) {
             foreach ($values as $value) {
-                $content .= sprintf("%-{$max}s %s\r\n", $this->beautifyHeaderName($name).':', $value);
+                $content .= sprintf("%-{$max}s %s\r\n", $this->beautifyHeaderName($name) . ':', $value);
             }
         }
 
@@ -481,6 +481,6 @@ class Response implements ResponseInterface
      */
     private function beautifyCallback($match)
     {
-        return '-'.strtoupper($match[1]);
+        return '-' . strtoupper($match[1]);
     }
 }
