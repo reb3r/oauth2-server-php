@@ -14,6 +14,6 @@ class ResponseTest extends TestCase
         ));
 
         $string = $response->getResponseBody('xml');
-        $this->assertContains('<response><foo>bar</foo><halland>oates</halland></response>', $string);
+        $this->assertStringContainsString('<response><foo>bar</foo><halland>oates</halland></response>', $string);
     }
 }
