@@ -13,7 +13,7 @@ class JwtBearerTest extends TestCase
 {
     private $privateKey;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->privateKey = <<<EOD
 -----BEGIN RSA PRIVATE KEY-----
@@ -268,8 +268,8 @@ EOD;
     {
         $server = $this->getTestServer();
         $request = TestRequest::createPost(array(
-                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',  // valid grant type
-                'assertion' => $this->getJWT(null, null, 'testuser@ourdomain.com', 'Test Client ID', 'unused_jti'), // valid assertion with invalid scope
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',  // valid grant type
+            'assertion' => $this->getJWT(null, null, 'testuser@ourdomain.com', 'Test Client ID', 'unused_jti'), // valid assertion with invalid scope
         ));
         $token = $server->grantAccessToken($request, $response = new Response());
 
@@ -281,8 +281,8 @@ EOD;
     {
         $server = $this->getTestServer();
         $request = TestRequest::createPost(array(
-                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',  // valid grant type
-                'assertion' => $this->getJWT(99999999900, null, 'testuser@ourdomain.com', 'Test Client ID', 'used_jti'), // valid assertion with invalid scope
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',  // valid grant type
+            'assertion' => $this->getJWT(99999999900, null, 'testuser@ourdomain.com', 'Test Client ID', 'used_jti'), // valid assertion with invalid scope
         ));
         $token = $server->grantAccessToken($request, $response = new Response());
 
@@ -295,8 +295,8 @@ EOD;
     {
         $server = $this->getTestServer();
         $request = TestRequest::createPost(array(
-                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',  // valid grant type
-                'assertion' => $this->getJWT(99999999900, null, 'testuser@ourdomain.com', 'Test Client ID', 'totally_new_jti'), // valid assertion with invalid scope
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',  // valid grant type
+            'assertion' => $this->getJWT(99999999900, null, 'testuser@ourdomain.com', 'Test Client ID', 'totally_new_jti'), // valid assertion with invalid scope
         ));
         $token = $server->grantAccessToken($request, $response = new Response());
 
