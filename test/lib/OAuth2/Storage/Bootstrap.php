@@ -20,7 +20,7 @@ class Bootstrap
 
     public function __construct()
     {
-        $this->configDir = __DIR__.'/../../../config';
+        $this->configDir = __DIR__ . '/../../../config';
     }
 
     public static function getInstance()
@@ -68,7 +68,7 @@ class Bootstrap
     public function getPostgresDriver()
     {
         try {
-            $pdo = new \PDO('pgsql:host=localhost;dbname=oauth2_server_php', 'postgres');
+            $pdo = new \PDO('pgsql:host=localhost;dbname=oauth2_server_php', 'postgres', 'postgres');
 
             return $pdo;
         } catch (\PDOException $e) {
@@ -78,7 +78,7 @@ class Bootstrap
 
     public function getMemoryStorage()
     {
-        return new Memory(json_decode(file_get_contents($this->configDir. '/storage.json'), true));
+        return new Memory(json_decode(file_get_contents($this->configDir . '/storage.json'), true));
     }
 
     public function getRedisStorage()
@@ -118,7 +118,7 @@ class Bootstrap
         if (!$this->mysql) {
             $pdo = null;
             try {
-                $pdo = new \PDO('mysql:host=localhost;', 'root');
+                $pdo = new \PDO('mysql:host=localhost;', 'root', 'root');
             } catch (\PDOException $e) {
                 $this->mysql = new NullStorage('MySQL', 'Unable to connect to MySQL on root@localhost');
             }
@@ -161,11 +161,11 @@ class Bootstrap
 
     private function createPostgresDb()
     {
-        if (!`psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='postgres'"`) {
-            `createuser -s -r postgres`;
+        if (!`PGPASSWORD=postgres psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='postgres'" -h localhost -U postgres`) {
+            `PGPASSWORD=postgres createuser -s -r postgres -h localhost -U postgres`;
         }
 
-        `createdb -O postgres oauth2_server_php`;
+        `PGPASSWORD=postgres createdb -O postgres oauth2_server_php -h localhost -U postgres`;
     }
 
     private function populatePostgresDb(\PDO $pdo)
@@ -175,8 +175,8 @@ class Bootstrap
 
     private function removePostgresDb()
     {
-        if (trim(`psql -l | grep oauth2_server_php | wc -l`)) {
-            `dropdb oauth2_server_php`;
+        if (trim(`PGPASSWORD=postgres psql -l -h localhost -U postgres | grep oauth2_server_php | wc -l`)) {
+            `PGPASSWORD=postgres dropdb oauth2_server_php -h localhost -U postgres`;
         }
     }
 
@@ -229,7 +229,7 @@ class Bootstrap
 
     public function getSqliteDir()
     {
-        return $this->configDir. '/test.sqlite';
+        return $this->configDir . '/test.sqlite';
     }
 
     public function getConfigDir()
@@ -264,12 +264,12 @@ class Bootstrap
 
     public function getTestPublicKey()
     {
-        return file_get_contents(__DIR__.'/../../../config/keys/id_rsa.pub');
+        return file_get_contents(__DIR__ . '/../../../config/keys/id_rsa.pub');
     }
 
     private function getTestPrivateKey()
     {
-        return file_get_contents(__DIR__.'/../../../config/keys/id_rsa');
+        return file_get_contents(__DIR__ . '/../../../config/keys/id_rsa');
     }
 
     private function getEnvVar($var, $default = null)

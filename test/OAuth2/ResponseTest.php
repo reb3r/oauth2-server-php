@@ -16,4 +16,23 @@ class ResponseTest extends TestCase
         $string = $response->getResponseBody('xml');
         $this->assertStringContainsString('<response><foo>bar</foo><halland>oates</halland></response>', $string);
     }
+
+    public function testSetRedirect()
+    {
+        $response = new Response();
+        $url = 'https://foo/bar';
+        $state = 'stateparam';
+        $response->setRedirect(301, $url, $state);
+        $this->assertEquals(
+            sprintf('%s?state=%s', $url, $state),
+            $response->getHttpHeader('Location')
+        );
+
+        $query = 'query=foo';
+        $response->setRedirect(301, $url . '?' . $query, $state);
+        $this->assertEquals(
+            sprintf('%s?%s&state=%s', $url, $query, $state),
+            $response->getHttpHeader('Location')
+        );
+    }
 }

@@ -140,7 +140,6 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param int $statusCode
      * @param string $text
      * @throws InvalidArgumentException
      */
@@ -365,7 +364,7 @@ class Response implements ResponseInterface
         if (count($this->parameters) > 0) {
             // add parameters to URL redirection
             $parts = parse_url($url);
-            $sep = isset($parts['query']) && count($parts['query']) > 0 ? '&' : '?';
+            $sep = isset($parts['query']) && !empty($parts['query']) ? '&' : '?';
             $url .= $sep . http_build_query($this->parameters);
         }
 
