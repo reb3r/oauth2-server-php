@@ -213,7 +213,7 @@ class Request implements RequestInterface
 
         // PHP_AUTH_USER/PHP_AUTH_PW
         if (isset($headers['PHP_AUTH_USER'])) {
-            $headers['AUTHORIZATION'] = 'Basic '.base64_encode($headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW']);
+            $headers['AUTHORIZATION'] = 'Basic ' . base64_encode($headers['PHP_AUTH_USER'] . ':' . $headers['PHP_AUTH_PW']);
         }
 
         return $headers;
@@ -235,12 +235,14 @@ class Request implements RequestInterface
 
         $contentType = $request->server('CONTENT_TYPE', '');
         $requestMethod = $request->server('REQUEST_METHOD', 'GET');
-        if (0 === strpos($contentType, 'application/x-www-form-urlencoded')
+        if (
+            0 === strpos($contentType, 'application/x-www-form-urlencoded')
             && in_array(strtoupper($requestMethod), array('PUT', 'DELETE'))
         ) {
             parse_str($request->getContent(), $data);
             $request->request = $data;
-        } elseif (0 === strpos($contentType, 'application/json')
+        } elseif (
+            0 === strpos($contentType, 'application/json')
             && in_array(strtoupper($requestMethod), array('POST', 'PUT', 'DELETE'))
         ) {
             $data = json_decode($request->getContent(), true);
