@@ -37,7 +37,9 @@ class IdTokenToken implements IdTokenTokenInterface
     {
         $result = $this->accessToken->getAuthorizeResponse($params, $user_id);
         $access_token = $result[1]['fragment']['access_token'];
-        $id_token = $this->idToken->createIdToken($params['client_id'], $user_id, $params['nonce'], null, $access_token);
+        // We need sid for backchannel logout
+        $sid = $params['sid'] ?? null;
+        $id_token = $this->idToken->createIdToken($params['client_id'], $user_id, $params['nonce'], null, $access_token, $sid);
         $result[1]['fragment']['id_token'] = $id_token;
 
         return $result;

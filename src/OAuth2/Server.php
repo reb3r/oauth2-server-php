@@ -2,6 +2,7 @@
 
 namespace OAuth2;
 
+use GuzzleHttp\Client;
 use OAuth2\ClientAssertionType\ClientAssertionTypeInterface;
 use OAuth2\ClientAssertionType\HttpBasic;
 use OAuth2\Controller\AuthorizeController;
@@ -39,6 +40,10 @@ use OAuth2\TokenType\Bearer;
 use OAuth2\TokenType\TokenTypeInterface;
 use LogicException;
 use OAuth2\OpenID\Controller\DiscoveryControllerInterface;
+use OAuth2\OpenID\Controller\LogoutController;
+use OAuth2\OpenID\Controller\LogoutControllerInterface;
+use OAuth2\OpenID\RequestType\LogoutToken;
+use OAuth2\OpenID\RequestType\RequestTypeInterface;
 
 /**
  * Server class for OAuth2
@@ -108,6 +113,12 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
 
     /**
      *
+     * @var LogoutControllerInterface
+     */
+    protected $logoutController;
+
+    /**
+     *
      * @var array
      */
     protected $grantTypes = array();
@@ -117,6 +128,12 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      * @var array
      */
     protected $responseTypes = array();
+
+    /**
+     *
+     * @var array
+     */
+    protected $requestTypes = array();
 
     /**
      *
@@ -151,7 +168,10 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         'public_key' => 'OAuth2\Storage\PublicKeyInterface',
         'jwt_bearer' => 'OAuth2\Storage\JWTBearerInterface',
         'scope' => 'OAuth2\Storage\ScopeInterface',
-        'discovery_configuration' => 'OAuth2\OpenID\Storage\DiscoveryConfigurationInterface'
+        'discovery_configuration' => 'OAuth2\OpenID\Storage\DiscoveryConfigurationInterface',
+        'session' => 'OAuth2\OpenID\Storage\SessionInterface',
+        'session_token' => 'OAuth2\OpenID\Storage\SessionTokenInterface',
+        'logged_in_rp' => 'OAuth2\OpenID\Storage\LoggedInRPInterface'
     );
 
     /**
@@ -164,6 +184,14 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         'id_token' => 'OAuth2\OpenID\ResponseType\IdTokenInterface',
         'id_token token' => 'OAuth2\OpenID\ResponseType\IdTokenTokenInterface',
         'code id_token' => 'OAuth2\OpenID\ResponseType\CodeIdTokenInterface'
+    );
+
+    /**
+     *
+     * @var array
+     */
+    protected $requestTypeMap = array(
+        'logout_token' => 'OAuth2\OpenID\RequestType\LogoutTokenInterface'
     );
 
     /**
@@ -215,7 +243,8 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
             'allow_credentials_in_request_body' => true,
             'allow_public_clients' => true,
             'always_issue_new_refresh_token' => false,
-            'unset_refresh_token_after_use' => true
+            'unset_refresh_token_after_use' => true,
+            'session_lifetime' => 3600,
         ), $config);
 
         foreach ($grantTypes as $key => $grantType) {
@@ -313,6 +342,18 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
 
     /**
      *
+     * @return LogoutController
+     */
+    public function getLogoutController()
+    {
+        if (is_null($this->logoutController)) {
+            $this->logoutController = $this->createDefaultLogoutController();
+        }
+        return $this->logoutController;
+    }
+
+    /**
+     *
      * @param AuthorizeControllerInterface $authorizeController
      */
     public function setAuthorizeController(AuthorizeControllerInterface $authorizeController)
@@ -366,6 +407,15 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     }
 
     /**
+     *
+     * @param LogoutControllerInterface $logoutController
+     */
+    public function setLogoutController(LogoutControllerInterface $logoutController)
+    {
+        $this->logoutController = $logoutController;
+    }
+
+    /**
      * Return claims about the authenticated end-user.
      * This would be called from the "/UserInfo" endpoint as defined in the spec.
      *
@@ -408,10 +458,21 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *
      * @ingroup oauth2_section_4
      */
-    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null)
+    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null, $session_id = null, $user_id = null)
     {
         $this->response = is_null($response) ? new Response() : $response;
-        $this->getTokenController()->handleTokenRequest($request, $this->response);
+
+        // set session for backchannel logout if config is set
+        $session = $this->setSession($session_id, $user_id);
+        $token = $this->getTokenController()->handleTokenRequest($request, $this->response);
+
+        if ($session && $token) {
+            if (isset($token['refresh_token'])) {
+                $this->storages['session_token']->setSessionToken($session_id, $token['refresh_token'], true);
+            }
+            $this->storages['session_token']->setSessionToken($session_id, $token['access_token']);
+            $this->storages['logged_in_rp']->setLoggedInRPByToken($session_id, $token['access_token']);
+        }
 
         return $this->response;
     }
@@ -478,10 +539,13 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *
      * @ingroup oauth2_section_4
      */
-    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null)
+    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null, $session_id = null)
     {
         $this->response = $response;
-        $this->getAuthorizeController()->handleAuthorizeRequest($request, $this->response, $is_authorized, $user_id);
+        // set session for backchannel logout if config is set
+        $session = $this->setSession($session_id, $user_id);
+        $sid = $session['sid'] ?? null;
+        $this->getAuthorizeController()->handleAuthorizeRequest($request, $this->response, $is_authorized, $user_id, $sid);
 
         return $this->response;
     }
@@ -546,6 +610,25 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         $value = $this->getDiscoveryController()->validateConfigurationDiscoveryRequest($request, $response);
 
         return $value;
+    }
+
+    /**
+     * Logout the user from all logged in rps
+     * 
+     *
+     * @param LogInterface $log
+     * @param Client $client
+     * @param string $session_id
+     *            - Session identifier of the application
+     * @param mixed $user_id
+     *            - Identifier of user who authorized the client
+     * @return bool
+     * 
+     * @see https://openid.net/specs/openid-connect-backchannel-1_0.html#Backchannel
+     */
+    public function handleLogoutSession(LogInterface $log, Client $client, $session_id, $user_id = null)
+    {
+        return $this->getLogoutController()->logoutSession($log, $client, $session_id, $user_id);
     }
 
     /**
@@ -677,6 +760,39 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
 
             if (!$set) {
                 throw new \InvalidArgumentException(sprintf('Unknown response type %s.  Please implement one of [%s]', get_class($responseType), implode(', ', $this->responseTypeMap)));
+            }
+        }
+    }
+
+    /**
+     *
+     * @param RequestTypeInterface $requestType
+     * @param mixed $key
+     *
+     * @throws InvalidArgumentException
+     */
+    public function addRequestType(RequestTypeInterface $requestType, $key = null)
+    {
+        $key = $this->normalizeResponseType($key);
+
+        if (isset($this->requestTypeMap[$key])) {
+            if (!$requestType instanceof $this->requestTypeMap[$key]) {
+                throw new \InvalidArgumentException(sprintf('responseType of type "%s" must implement interface "%s"', $key, $this->requestTypeMap[$key]));
+            }
+            $this->responseTypes[$key] = $requestType;
+        } elseif (!is_null($key) && !is_numeric($key)) {
+            throw new \InvalidArgumentException(sprintf('unknown responseType key "%s", must be one of [%s]', $key, implode(', ', array_keys($this->requestTypeMap))));
+        } else {
+            $set = false;
+            foreach ($this->requestTypeMap as $type => $interface) {
+                if ($requestType instanceof $interface) {
+                    $this->responseTypes[$type] = $requestType;
+                    $set = true;
+                }
+            }
+
+            if (!$set) {
+                throw new \InvalidArgumentException(sprintf('Unknown response type %s.  Please implement one of [%s]', get_class($requestType), implode(', ', $this->requestTypeMap)));
             }
         }
     }
@@ -836,6 +952,35 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     }
 
     /**
+     * Undocumented function
+     *
+     * @return LogoutControllerInterface
+     * @throws LogicException
+     */
+    protected function createDefaultLogoutController()
+    {
+        if (!isset($this->storages['session'])) {
+            throw new LogicException("You must supply a storage object implementing \OAuth2\OpenID\Storage\SessionInterface to use the session logout");
+        }
+
+        if (!isset($this->storages['logged_in_rp'])) {
+            throw new LogicException("You must supply a storage object implementing \OAuth2\OpenID\Storage\LoggedInRPInterface to use the session logout");
+        }
+
+        if (!isset($this->storages['client'])) {
+            throw new LogicException("You must supply a storage object implementing \OAuth2\Storage\ClientInterface to use the session logout");
+        }
+
+        if (!isset($this->storages['session_token'])) {
+            throw new LogicException("You must supply a storage object implementing \OAuth2\OpenID\Storage\SessionTokenInterface to use the session logout");
+        }
+
+        $logoutTokenRequestType = $this->getLogoutTokenRequestType();
+
+        return new LogoutController($this->storages['session'], $this->storages['logged_in_rp'], $this->storages['client'], $this->storages['session_token'], $logoutTokenRequestType);
+    }
+
+    /**
      *
      * @return Bearer
      */
@@ -973,6 +1118,19 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     }
 
     /**
+     *
+     * @return LogoutToken
+     */
+    protected function getLogoutTokenRequestType()
+    {
+        if (isset($this->requestTypes['logout_token'])) {
+            return $this->requestTypes['logout_token'];
+        }
+
+        return $this->createDefaultLogoutTokenRequestType();
+    }
+
+    /**
      * For Resource Controller
      *
      * @return JwtAccessTokenStorage
@@ -1070,6 +1228,25 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
 
     /**
      *
+     * @return LogoutToken
+     * @throws LogicException
+     */
+    protected function createDefaultLogoutTokenRequestType()
+    {
+        if (!isset($this->storages['user_claims'])) {
+            throw new LogicException("You must supply a storage object implementing OAuth2\OpenID\Storage\UserClaimsInterface to use openid connect");
+        }
+        if (!isset($this->storages['public_key'])) {
+            throw new LogicException("You must supply a storage object implementing OAuth2\Storage\PublicKeyInterface to use openid connect");
+        }
+
+        $config = array_intersect_key($this->config, array_flip(explode(' ', 'issuer id_lifetime')));
+
+        return new LogoutToken($this->storages['user_claims'], $this->storages['public_key'], $config);
+    }
+
+    /**
+     *
      * @throws InvalidArgumentException
      */
     protected function validateOpenIdConnect()
@@ -1095,6 +1272,30 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         }
 
         return $name;
+    }
+
+    /**
+     * Saves session for backchannel logout if config is set
+     * 
+     * @param string $session_id
+     * @return bool|array
+     */
+    protected function setSession($session_id, $user_id)
+    {
+        if (isset($this->config['discovery_configuration'])) {
+            if (isset($this->config['discovery_configuration']['backchannel_logout_supported']) && $this->config['discovery_configuration']['backchannel_logout_supported'] === true && $session_id) {
+                $sid = UniqueToken::uniqueToken();
+                $expires = time() + $this->config['session_lifetime'];
+                $this->storages['session']->setSession($session_id, $user_id, $sid, $expires);
+                return [
+                    'session_id' => $session_id,
+                    'user_id' => $user_id,
+                    'sid' => $sid,
+                    'expires' => $expires,
+                ];
+            }
+        }
+        return false;
     }
 
     /**

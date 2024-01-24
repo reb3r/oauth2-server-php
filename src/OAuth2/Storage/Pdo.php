@@ -5,6 +5,9 @@ namespace OAuth2\Storage;
 use OAuth2\OpenID\Storage\UserClaimsInterface;
 use OAuth2\OpenID\Storage\AuthorizationCodeInterface as OpenIDAuthorizationCodeInterface;
 use InvalidArgumentException;
+use OAuth2\OpenID\Storage\LoggedInRPInterface;
+use OAuth2\OpenID\Storage\SessionInterface;
+use OAuth2\OpenID\Storage\SessionTokenInterface;
 
 /**
  * Simple PDO storage for all storage types
@@ -28,7 +31,10 @@ class Pdo implements
     ScopeInterface,
     PublicKeyInterface,
     UserClaimsInterface,
-    OpenIDAuthorizationCodeInterface
+    OpenIDAuthorizationCodeInterface,
+    SessionInterface,
+    SessionTokenInterface,
+    LoggedInRPInterface
 {
     /**
      * @var \PDO
@@ -81,6 +87,9 @@ class Pdo implements
             'jti_table'  => 'oauth_jti',
             'scope_table'  => 'oauth_scopes',
             'public_key_table'  => 'oauth_public_keys',
+            'session_table' => 'oauth_sessions',
+            'session_token_table' => 'oauth_session_tokens',
+            'logged_in_rp_table' => 'oauth_logged_in_rps'
         ), $config);
     }
 
@@ -638,6 +647,151 @@ class Pdo implements
         return 'RS256';
     }
 
+    public function setSession($session_id, $user_id, $sid, $expires)
+    {
+        // convert expires to datestring
+        $expires = date('Y-m-d H:i:s', $expires);
+
+        if ($this->getSession($session_id)) {
+            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET expires=:expires where session_id=:session_id', $this->config['session_table']));
+            return $stmt->execute(compact('session_id', 'expires'));
+        }
+
+        $stmt = $this->db->prepare(sprintf('INSERT INTO %s (session_id, user_id, sid, expires) VALUES (:session_id, :user_id, :sid, :expires)', $this->config['session_table']));
+
+        return $stmt->execute(compact('session_id', 'user_id', 'sid', 'expires'));
+    }
+
+    public function getSession($session_id)
+    {
+        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where session_id=:session_id', $this->config['session_table']));
+        $stmt->execute(compact('session_id'));
+
+        if (!$session = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return false;
+        }
+
+        return $session;
+    }
+
+    public function removeSession($session_id)
+    {
+        $stmt = $this->db->prepare(sprintf('DELETE FROM %s WHERE session_id = :session_id', $this->config['session_table']));
+
+        return $stmt->execute(compact('session_id'));
+    }
+
+    public function setLoggedInRPByToken($session_id, $access_token) 
+    {
+        if ($token = $this->getAccessToken($access_token)) {
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (session_id, client_id) VALUES (:session_id, :client_id)', $this->config['logged_in_rp_table']));
+            return $stmt->execute(array('session_id' => $session_id, 'client_id' => $token['client_id']));
+        }
+        return false;
+    }
+
+    public function getLoggedInRPs($session_id)
+    {
+        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where session_id=:session_id', $this->config['logged_in_rp_table']));
+        $stmt->execute(compact('session_id'));
+
+        if (!$loggedInRPs = $stmt->fetchAll(\PDO::FETCH_ASSOC)) {
+            return [];
+        }
+
+        return $loggedInRPs;
+    }
+
+    public function removeLoggedInRP($session_id, $client_id)
+    {
+        $stmt = $this->db->prepare(sprintf('DELETE FROM %s WHERE session_id = :session_id AND client_id = :client_id', $this->config['logged_in_rp_table']));
+
+        return $stmt->execute(compact('session_id', 'client_id'));
+    }
+
+    public function setSessionToken($session_id, $token, bool $is_refresh_token = false)
+    {
+        if ($sessionToken = $this->getSessionToken($session_id, $token)) {
+            return true;
+        }
+
+        $stmt = $this->db->prepare(sprintf('INSERT INTO %s (session_id, token, is_refresh_token) VALUES (:session_id, :token, :is_refresh_token)', $this->config['session_token_table']));
+        return $stmt->execute(compact('session_id', 'token', 'is_refresh_token'));
+    }
+
+    public function getSessionToken($session_id, $token)
+    {
+        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where session_id=:session_id and token=:token', $this->config['session_token_table']));
+        $stmt->execute(compact('session_id', 'token'));
+
+        if (!$sessionToken = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return false;
+        }
+
+        return $sessionToken;
+    }
+
+    public function getSessionTokens($session_id)
+    {
+        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where session_id=:session_id', $this->config['session_token_table']));
+        $stmt->execute(compact('session_id'));
+
+        if (!$sessionToken = $stmt->fetchAll(\PDO::FETCH_ASSOC)) {
+            return [];
+        }
+
+        return $sessionToken;
+    }
+
+    public function removeSessionTokens($session_id)
+    {
+        $stmt = $this->db->prepare(sprintf('DELETE FROM %s WHERE session_id = :session_id', $this->config['session_token_table']));
+
+        return $stmt->execute(compact('session_id'));
+    }
+
+    public function getTokensBySession($session_id)
+    {
+        if (!$sessionTokens = $this->getSessionTokens($session_id)) {
+            return [];
+        }
+        $tokens = [];
+        foreach ($sessionTokens as $sessionToken) {
+            if ($sessionToken['is_refresh_token']) {
+                $tokens['refresh_tokens'][] = $this->getRefreshToken($sessionToken['token']);
+            } else {
+                $tokens['access_tokens'][] = $this->getAccessToken($sessionToken['token']);
+            }
+        }
+
+        return $tokens;
+    }
+
+    public function removeTokensBySession($session_id)
+    {
+        if (!$tokens = $this->getTokensBySession($session_id)) {
+            return true;
+        }
+
+        if (isset($tokens['access_tokens'])) {
+            foreach ($tokens['access_tokens'] as $token) {
+                $this->unsetAccessToken($token['access_token']);
+            }
+        }
+
+        if (isset($tokens['refresh_tokens'])) {
+            foreach ($tokens['refresh_tokens'] as $token) {
+                $scopes = explode(' ', $token['scope']);
+                if (in_array('offline_access', $scopes)) {
+                    continue;
+                }
+                $this->unsetRefreshToken($token['refresh_token']);
+            }
+        }
+
+        return true;
+    }
+
     /**
      * DDL to create OAuth2 database and tables for PDO storage
      *
@@ -650,12 +804,14 @@ class Pdo implements
     {
         $sql = "
         CREATE TABLE {$this->config['client_table']} (
-          client_id             VARCHAR(80)   NOT NULL,
-          client_secret         VARCHAR(80),
-          redirect_uri          VARCHAR(2000),
-          grant_types           VARCHAR(80),
-          scope                 VARCHAR(4000),
-          user_id               VARCHAR(80),
+          client_id                             VARCHAR(80)   NOT NULL,
+          client_secret                         VARCHAR(80),
+          redirect_uri                          VARCHAR(2000),
+          grant_types                           VARCHAR(80),
+          scope                                 VARCHAR(4000),
+          user_id                               VARCHAR(80),
+          backchannel_logout_uri                VARCHAR(2000),
+          backchannel_logout_session_required   BOOLEAN,
           PRIMARY KEY (client_id)
         );
 
@@ -725,6 +881,26 @@ class Pdo implements
               public_key           VARCHAR(2000),
               private_key          VARCHAR(2000),
               encryption_algorithm VARCHAR(100) DEFAULT 'RS256'
+            );
+
+            CREATE TABLE {$this->config['session_table']} (
+                session_id           VARCHAR(80)   NOT NULL,
+                user_id              VARCHAR(80),
+                sid                  VARCHAR(2000) NOT NULL,
+                expires              TIMESTAMP     NOT NULL,
+                PRIMARY KEY (session_id)
+            );
+
+            CREATE TABLE {$this->config['session_token_table']} (
+                session_id           VARCHAR(80)    NOT NULL,
+                token                VARCHAR(40)    NOT NULL,
+                is_refresh_token      BOOLEAN
+            );
+
+            CREATE TABLE {$this->config['logged_in_rp_table']} (
+                session_id           VARCHAR(80)   NOT NULL,
+                client_id            VARCHAR(80) NOT NULL,
+                PRIMARY KEY (session_id)
             )
         ";
 
