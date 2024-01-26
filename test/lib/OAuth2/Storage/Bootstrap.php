@@ -213,10 +213,10 @@ class Bootstrap
         $pdo->prepare($sql)->execute(array('accesstoken-openid-connect', 'Some Client', date('Y-m-d H:i:s', strtotime('+1 hour')), 'testuser'));
         $pdo->prepare($sql)->execute(array('testcode3', 'Test Client Backchannel Logout No Uri', date('Y-m-d H:i:s', strtotime('+1 hour')), 'testuser'));
 
-        $sql = 'INSERT INTO oauth_authorization_codes (authorization_code, client_id, expires) VALUES (?, ?, ?)';
-        $pdo->prepare($sql)->execute(array('testcode', 'Some Client', date('Y-m-d H:i:s', strtotime('+1 hour'))));
-        $pdo->prepare($sql)->execute(array('testcode2', 'Test Client Backchannel Logout', date('Y-m-d H:i:s', strtotime('+1 hour'))));
-        $pdo->prepare($sql)->execute(array('testcode3', 'Test Client Backchannel Logout No Uri', date('Y-m-d H:i:s', strtotime('+1 hour'))));
+        $sql = 'INSERT INTO oauth_authorization_codes (authorization_code, client_id, expires, user_id) VALUES (?, ?, ?, ?)';
+        $pdo->prepare($sql)->execute(array('testcode', 'Some Client', date('Y-m-d H:i:s', strtotime('+1 hour')), null));
+        $pdo->prepare($sql)->execute(array('testcode2', 'Test Client Backchannel Logout', date('Y-m-d H:i:s', strtotime('+1 hour')), 'abcd123'));
+        $pdo->prepare($sql)->execute(array('testcode3', 'Test Client Backchannel Logout No Uri', date('Y-m-d H:i:s', strtotime('+1 hour')), null));
 
         $sql = 'INSERT INTO oauth_users (username, password, email, email_verified) VALUES (?, ?, ?, ?)';
         $pdo->prepare($sql)->execute(array('testuser', 'password', 'testuser@test.com', true));

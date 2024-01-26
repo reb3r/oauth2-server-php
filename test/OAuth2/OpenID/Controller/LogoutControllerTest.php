@@ -35,8 +35,8 @@ class LogoutControllerTest extends TestCase
             'code' => 'testcode2',
         ));
 
-        $server->handleTokenRequest($request, $response = new Response(), $session_id, $user_id);
-        
+        $server->handleTokenRequest($request, $response = new Response(), $session_id);
+
         $session = $this->storage->getSession($session_id);
         $sessionTokens = $this->storage->getSessionTokens($session_id);
         $loggedInRPs = $this->storage->getLoggedInRPs($session_id);

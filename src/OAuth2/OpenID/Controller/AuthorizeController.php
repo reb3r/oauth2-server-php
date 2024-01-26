@@ -61,7 +61,7 @@ class AuthorizeController extends BaseAuthorizeController implements AuthorizeCo
      * @param mixed $user_id
      * @return array
      */
-    protected function buildAuthorizeParameters($request, $response, $user_id)
+    protected function buildAuthorizeParameters($request, $response, $user_id, $sid = null)
     {
         if (!$params = parent::buildAuthorizeParameters($request, $response, $user_id)) {
             return;
@@ -70,7 +70,7 @@ class AuthorizeController extends BaseAuthorizeController implements AuthorizeCo
         // Generate an id token if needed.
         if ($this->needsIdToken($this->getScope()) && $this->getResponseType() == self::RESPONSE_TYPE_AUTHORIZATION_CODE) {
             $userClaims = $this->clientStorage->getUserClaims($user_id, $params['scope']);
-            $params['id_token'] = $this->responseTypes['id_token']->createIdToken($this->getClientId(), $user_id, $this->nonce, $userClaims);
+            $params['id_token'] = $this->responseTypes['id_token']->createIdToken($this->getClientId(), $user_id, $this->nonce, $userClaims, $sid);
         }
 
         // add the nonce to return with the redirect URI
@@ -79,6 +79,10 @@ class AuthorizeController extends BaseAuthorizeController implements AuthorizeCo
         // Add PKCE code challenge.
         $params['code_challenge'] = $this->code_challenge;
         $params['code_challenge_method'] = $this->code_challenge_method;
+
+        if (isset($sid)) {
+            $params['sid'] = $sid;
+        }
 
         return $params;
     }

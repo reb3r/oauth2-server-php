@@ -134,12 +134,8 @@ class AuthorizeController implements AuthorizeControllerInterface
         }
 
         // build the parameters to set in the redirect URI
-        if (!$params = $this->buildAuthorizeParameters($request, $response, $user_id)) {
+        if (!$params = $this->buildAuthorizeParameters($request, $response, $user_id, $sid)) {
             return;
-        }
-
-        if ($sid) {
-            $params['sid'] = $sid;
         }
 
         $authResult = $this->responseTypes[$this->response_type]->getAuthorizeResponse($params, $user_id);
