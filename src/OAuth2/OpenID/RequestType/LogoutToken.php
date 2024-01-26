@@ -73,7 +73,7 @@ class LogoutToken implements LogoutTokenInterface
             'aud'        => $client_id,
             'iat'        => time(),
             'jti'        => UniqueToken::uniqueToken(),
-            'events'     => '{"http://schemas.openid.net/event/backchannel-logout":{}}',
+            'events'     => ['http://schemas.openid.net/event/backchannel-logout' => []],
             'exp'        => time() + $this->config['logout_token_lifetime'],
         );
 

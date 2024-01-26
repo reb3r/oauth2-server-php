@@ -178,7 +178,7 @@ class AuthorizeController implements AuthorizeControllerInterface
      * @param mixed $user_id
      * @return array
      */
-    protected function buildAuthorizeParameters($request, $response, $user_id)
+    protected function buildAuthorizeParameters($request, $response, $user_id, $sid = null)
     {
         // @TODO: we should be explicit with this in the future
         $params = array(
