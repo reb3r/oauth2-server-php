@@ -458,13 +458,20 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *
      * @ingroup oauth2_section_4
      */
-    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null, $session_id = null, $user_id = null)
+    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null, $session_id = null)
     {
         $this->response = is_null($response) ? new Response() : $response;
 
-        // set session for backchannel logout if config is set
-        $session = $this->setSession($session_id, $user_id);
         $token = $this->getTokenController()->handleTokenRequest($request, $this->response);
+
+        $session = false;
+        if (isset($token['access_token'])) {
+            $accessToken = $this->storages['access_token']->getAccessToken($token['access_token']);
+            // set session for backchannel logout if config is set
+            if (isset($accessToken['user_id'])) {
+                $session = $this->setSession($session_id, $accessToken['user_id']);
+            }
+        }
 
         if ($session && $token) {
             if (isset($token['refresh_token'])) {
@@ -1282,20 +1289,25 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      */
     protected function setSession($session_id, $user_id)
     {
-        if (isset($this->config['discovery_configuration'])) {
-            if (isset($this->config['discovery_configuration']['backchannel_logout_supported']) && $this->config['discovery_configuration']['backchannel_logout_supported'] === true && $session_id) {
-                $sid = UniqueToken::uniqueToken();
-                $expires = time() + $this->config['session_lifetime'];
-                $this->storages['session']->setSession($session_id, $user_id, $sid, $expires);
-                return [
-                    'session_id' => $session_id,
-                    'user_id' => $user_id,
-                    'sid' => $sid,
-                    'expires' => $expires,
-                ];
-            }
+
+        if ($this->isBackchannelLogoutSupported() && $session_id) {
+            $sid = UniqueToken::uniqueToken();
+            $expires = time() + $this->config['session_lifetime'];
+            $this->storages['session']->setSession($session_id, $user_id, $sid, $expires);
+            return [
+                'session_id' => $session_id,
+                'user_id' => $user_id,
+                'sid' => $sid,
+                'expires' => $expires,
+            ];
         }
+
         return false;
+    }
+
+    protected function isBackchannelLogoutSupported()
+    {
+        return (isset($this->config['discovery_configuration']['backchannel_logout_supported']) && $this->config['discovery_configuration']['backchannel_logout_supported'] === true);
     }
 
     /**
