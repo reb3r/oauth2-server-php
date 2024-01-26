@@ -80,13 +80,7 @@ class LogoutController implements LogoutControllerInterface
                 continue;
             }
 
-            if ($client['backchannel_logout_session_required']) {
-                $user_id = null;
-                if (!$sid) {
-                    $log::error('Exception while logging out session - backchannel logout uri required but not set for client: ' . $loggedInRP['client_id']);
-                    continue;
-                }
-            } else {
+            if (!$client['backchannel_logout_session_required']) {
                 $sid = null;
                 if (!$user_id) {
                     $log::error('Exception while logging out session - backchannel logout uri not required but no user id existing for client: ' . $loggedInRP['client_id']);
