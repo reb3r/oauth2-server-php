@@ -70,7 +70,7 @@ class AuthorizeController extends BaseAuthorizeController implements AuthorizeCo
         // Generate an id token if needed.
         if ($this->needsIdToken($this->getScope()) && $this->getResponseType() == self::RESPONSE_TYPE_AUTHORIZATION_CODE) {
             $userClaims = $this->clientStorage->getUserClaims($user_id, $params['scope']);
-            $params['id_token'] = $this->responseTypes['id_token']->createIdToken($this->getClientId(), $user_id, $this->nonce, $userClaims, $sid);
+            $params['id_token'] = $this->responseTypes['id_token']->createIdToken($this->getClientId(), $user_id, $this->nonce, $userClaims, null, $sid);
         }
 
         // add the nonce to return with the redirect URI
