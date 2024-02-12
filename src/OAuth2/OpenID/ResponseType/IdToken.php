@@ -151,6 +151,24 @@ class IdToken implements IdTokenInterface
         return $this->encryptionUtil->encode($token, $private_key, $algorithm);
     }
 
+    public function decodeToken($token, $client_id = null)
+    {
+        // just decode the token, don't verify
+        if (!$tokenData = $this->encryptionUtil->decode($token, null, false)) {
+            return false;
+        }
+
+        if (!$client_id) {
+            $client_id  = isset($tokenData['aud']) ? $tokenData['aud'] : null;
+        }
+
+        $public_key = $this->publicKeyStorage->getPublicKey($client_id);
+        $algorithm  = $this->publicKeyStorage->getEncryptionAlgorithm($client_id);
+
+        // now that we have the client_id, verify the token
+        return $this->encryptionUtil->decode($token, $public_key, array($algorithm));
+    }
+
     /**
      * @param $userInfo
      * @return array

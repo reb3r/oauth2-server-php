@@ -2,7 +2,6 @@
 
 namespace OAuth2;
 
-use GuzzleHttp\Client;
 use OAuth2\ClientAssertionType\ClientAssertionTypeInterface;
 use OAuth2\ClientAssertionType\HttpBasic;
 use OAuth2\Controller\AuthorizeController;
@@ -464,24 +463,36 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
 
         $token = $this->getTokenController()->handleTokenRequest($request, $this->response);
 
-        $session = false;
-        if (isset($token['access_token'])) {
-            $accessToken = $this->storages['access_token']->getAccessToken($token['access_token']);
-            // set session for backchannel logout if config is set
-            if (isset($accessToken['user_id'])) {
-                $session = $this->setSession($session_id, $accessToken['user_id']);
-            }
-        }
-
-        if ($session && $token) {
-            if (isset($token['refresh_token'])) {
-                $this->storages['session_token']->setSessionToken($session_id, $token['refresh_token'], true);
-            }
-            $this->storages['session_token']->setSessionToken($session_id, $token['access_token']);
-            $this->storages['logged_in_rp']->setLoggedInRPByToken($session_id, $token['access_token']);
+        if ($this->isBackchannelLogoutSupported()) {
+            $this->getLogoutController()->setHandleTokenSession($request, $token);
         }
 
         return $this->response;
+    }
+
+    /**
+     * Decodes the id token of openid
+     *
+     * @param string $token
+     * @return mixed
+     */
+    public function getDecodedIdToken(string $token)
+    {
+        return $this->getIdTokenResponseType()->decodeToken($token);
+    }
+
+    /**
+     * Handles the validate rp logout request
+     *
+     * @param RequestInterface $request
+     * @param ResponseInterface|null $response
+     * @return boolean
+     * 
+     * @see https://openid.net/specs/openid-connect-rpinitiated-1_0.html#ValidationAndErrorHandling
+     */
+    public function handleValidateRPLogoutRequest(RequestInterface $request, ResponseInterface $response = null)
+    {
+        return $this->getLogoutController()->validateRPLogoutRequest($request, $response);
     }
 
     /**
@@ -549,9 +560,14 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null, $session_id = null)
     {
         $this->response = $response;
+
+        $sid = null;
         // set session for backchannel logout if config is set
-        $session = $this->setSession($session_id, $user_id);
-        $sid = $session['sid'] ?? null;
+        if ($this->isBackchannelLogoutSupported()) {
+            $session = $this->getLogoutController()->setSession($session_id, $user_id);
+            $sid = $session['sid'] ?? null;
+        }
+        
         $this->getAuthorizeController()->handleAuthorizeRequest($request, $this->response, $is_authorized, $user_id, $sid);
 
         return $this->response;
@@ -624,7 +640,6 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      * 
      *
      * @param LogInterface $log
-     * @param Client $client
      * @param string $session_id
      *            - Session identifier of the application
      * @param mixed $user_id
@@ -633,9 +648,25 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      * 
      * @see https://openid.net/specs/openid-connect-backchannel-1_0.html#Backchannel
      */
-    public function handleLogoutSession(LogInterface $log, Client $client, $session_id, $user_id = null)
+    public function handleLogoutSession(LogInterface $log, $session_id, $user_id = null)
     {
-        return $this->getLogoutController()->logoutSession($log, $client, $session_id, $user_id);
+        return $this->getLogoutController()->handleLogoutSession($log, $session_id, $user_id);
+    }
+
+    /**
+     * Logout the user from a certain rp
+     *
+     * @param LogInterface $log
+     * @param string $client_id
+     * @param string $session_id
+     *            - Session identifier of the application
+     * @return bool
+     * 
+     * @see https://openid.net/specs/openid-connect-rpinitiated-1_0.html
+     */
+    public function handleLogoutRP(LogInterface $log, $client_id, $session_id)
+    {
+        return $this->getLogoutController()->handleLogoutRP($log, $client_id, $session_id);
     }
 
     /**
@@ -983,8 +1014,9 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         }
 
         $logoutTokenRequestType = $this->getLogoutTokenRequestType();
+        $idTokenResponseType = $this->getIdTokenResponseType();
 
-        return new LogoutController($this->storages['session'], $this->storages['logged_in_rp'], $this->storages['client'], $this->storages['session_token'], $logoutTokenRequestType);
+        return new LogoutController($this->storages['session'], $this->storages['logged_in_rp'], $this->storages['client'], $this->storages['session_token'], $logoutTokenRequestType, $idTokenResponseType, $this->grantTypes, $this->config);
     }
 
     /**
@@ -1279,30 +1311,6 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         }
 
         return $name;
-    }
-
-    /**
-     * Saves session for backchannel logout if config is set
-     * 
-     * @param string $session_id
-     * @return bool|array
-     */
-    protected function setSession($session_id, $user_id)
-    {
-
-        if ($this->isBackchannelLogoutSupported() && $session_id) {
-            $sid = UniqueToken::uniqueToken();
-            $expires = time() + $this->config['session_lifetime'];
-            $this->storages['session']->setSession($session_id, $user_id, $sid, $expires);
-            return [
-                'session_id' => $session_id,
-                'user_id' => $user_id,
-                'sid' => $sid,
-                'expires' => $expires,
-            ];
-        }
-
-        return false;
     }
 
     protected function isBackchannelLogoutSupported()

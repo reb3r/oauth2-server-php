@@ -33,7 +33,9 @@ class AuthorizationCode extends BaseAuthorizationCode implements AuthorizationCo
 
         $params += array('scope' => null, 'state' => null, 'id_token' => null, 'code_challenge' => null, 'code_challenge_method' => null);
 
-        $result['query']['code'] = $this->createAuthorizationCode($params['client_id'], $user_id, $params['redirect_uri'], $params['scope'], $params['id_token'], $params['code_challenge'], $params['code_challenge_method']);
+        $sid = $params['sid'] ?? null;
+
+        $result['query']['code'] = $this->createAuthorizationCode($params['client_id'], $user_id, $params['redirect_uri'], $params['scope'], $params['id_token'], $params['code_challenge'], $params['code_challenge_method'], $sid);
 
         if (isset($params['state'])) {
             $result['query']['state'] = $params['state'];
@@ -56,10 +58,10 @@ class AuthorizationCode extends BaseAuthorizationCode implements AuthorizationCo
      * @see http://tools.ietf.org/html/rfc6749#section-4
      * @ingroup oauth2_section_4
      */
-    public function createAuthorizationCode($client_id, $user_id, $redirect_uri, $scope = null, $id_token = null, $code_challenge = null, $code_challenge_method = null)
+    public function createAuthorizationCode($client_id, $user_id, $redirect_uri, $scope = null, $id_token = null, $code_challenge = null, $code_challenge_method = null, $sid = null)
     {
         $code = $this->generateAuthorizationCode();
-        $this->storage->setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, time() + $this->config['auth_code_lifetime'], $scope, $id_token, $code_challenge, $code_challenge_method);
+        $this->storage->setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, time() + $this->config['auth_code_lifetime'], $scope, $id_token, $code_challenge, $code_challenge_method, $sid);
 
         return $code;
     }

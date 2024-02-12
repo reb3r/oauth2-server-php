@@ -126,6 +126,16 @@ class RefreshToken implements GrantTypeInterface
     }
 
     /**
+     * Get token
+     *
+     * @return void
+     */
+    public function getToken()
+    {
+        return $this->refreshToken;
+    }
+
+    /**
      * Create access token
      *
      * @param AccessTokenInterface $accessToken

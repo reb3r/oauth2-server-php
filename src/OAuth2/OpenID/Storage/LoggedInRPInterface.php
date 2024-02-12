@@ -29,6 +29,15 @@ interface LoggedInRPInterface
     public function getLoggedInRPs($session_id);
 
     /**
+     * Gets a specific logged in client of a user
+     *
+     * @param string $session_id
+     * @param string $client_id
+     * @return array|boolean
+     */
+    public function getLoggedInRPForSession($session_id, $client_id);
+
+    /**
      * Remove logged in client according to session
      *
      * @param string $session_id    - user session id

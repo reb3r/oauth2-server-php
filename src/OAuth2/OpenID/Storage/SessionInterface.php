@@ -30,6 +30,14 @@ interface SessionInterface
     public function getSession($session_id);
 
     /**
+     * Get the session by sid
+     *
+     * @param string $sid
+     * @return array|boolean
+     */
+    public function getSessionBySid($sid);
+
+    /**
      * Remove the stored session
      *
      * @param string $session_id    - user session id
