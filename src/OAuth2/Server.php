@@ -990,8 +990,6 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
     }
 
     /**
-     * Undocumented function
-     *
      * @return LogoutControllerInterface
      * @throws LogicException
      */
@@ -1279,7 +1277,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
             throw new LogicException("You must supply a storage object implementing OAuth2\Storage\PublicKeyInterface to use openid connect");
         }
 
-        $config = array_intersect_key($this->config, array_flip(explode(' ', 'issuer id_lifetime')));
+        $config = array_intersect_key($this->config, array_flip(explode(' ', 'issuer logout_token_lifetime')));
 
         return new LogoutToken($this->storages['user_claims'], $this->storages['public_key'], $config);
     }

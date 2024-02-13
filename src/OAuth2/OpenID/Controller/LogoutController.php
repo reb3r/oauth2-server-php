@@ -2,10 +2,10 @@
 namespace OAuth2\OpenID\Controller;
 
 use GuzzleHttp\Client;
+use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\GrantTypeInterface;
 use OAuth2\GrantType\RefreshToken;
 use OAuth2\LogInterface;
-use OAuth2\OpenID\GrantType\AuthorizationCode;
 use OAuth2\OpenID\RequestType\LogoutTokenInterface;
 use OAuth2\OpenID\ResponseType\IdTokenInterface;
 use OAuth2\OpenID\Storage\LoggedInRPInterface;
@@ -169,21 +169,22 @@ class LogoutController implements LogoutControllerInterface
         $sessionId = false;
         $userId = false;
         $clientId = null;
+        $code = null;
 
         if ($this->grantTypes[$grantType] instanceof AuthorizationCode) {
-            $code = $this->grantTypes[$grantType]->getAuthCode();            
-            $sid = $code['sid'] ?? null;
-            $session = $this->sessionStorage->getSessionBySid($sid);          
+            $code = $this->grantTypes[$grantType]->getAuthCode();      
+            $sid = $code['sid'];
+            $session = $this->sessionStorage->getSessionBySid($sid);
         }
 
         if ($this->grantTypes[$grantType] instanceof RefreshToken) {
             $code = $this->grantTypes[$grantType]->getToken();
-            $tokenForRefresh = $code['token'] ?? null;
+            $tokenForRefresh = $code['token'];
             $session = $this->sessionTokenStorage->getSessionByToken($tokenForRefresh);
         }
 
-        $clientId = $code['client_id'] ?? null;
-        $sessionId = $session['session_id'] ?? null;
+        $clientId = $code['client_id'];
+        $sessionId = $session['session_id'];
         $userId = $this->grantTypes[$grantType]->getUserId();
 
         $this->setSession($sessionId, $userId);
@@ -216,20 +217,17 @@ class LogoutController implements LogoutControllerInterface
             $clientIdTokenHint = $decodedIdToken['aud'] ?? null;
         }
 
-        if (!$clientId && !$clientIdTokenHint) {
-            return false;
-        }
-
-        if ($clientIdTokenHint !== $clientId) {
+        if ($clientId && $clientIdTokenHint && $clientIdTokenHint !== $clientId) {
             $response->setError(400, 'invalid_request', 'The client_id does not match the id_token_hint');
             return false;
         }
 
         $postLogoutRedirectUri = $request->request('logout_redirect_uri') ?? $request->query('logout_redirect_uri');
+
         if ($postLogoutRedirectUri && ($clientId || $clientIdTokenHint)) {
             $id = $clientId ?? $clientIdTokenHint;
             $client = $this->clientStorage->getClientDetails($id);
-            if ($client['logout_redirect_uri'] !== $postLogoutRedirectUri) {
+            if ($client && $client['logout_redirect_uri'] !== $postLogoutRedirectUri) {
                 $response->setError(400, 'invalid_request', 'The logout_redirect_uri does not match the client ones');
                 return false;
             }
@@ -265,7 +263,7 @@ class LogoutController implements LogoutControllerInterface
      * @param string $clientId
      * @param string $sessionId
      * @param string $sid
-     * @param string $userId
+     * @param string|null $userId
      * @return boolean
      */
     private function logoutRP(LogInterface $log, $clientId, $sessionId, $sid, $userId)
@@ -279,7 +277,7 @@ class LogoutController implements LogoutControllerInterface
         if (!$client['backchannel_logout_session_required']) {
             $sid = null;
             if (!$userId) {
-                $log::error('Exception while logging out session - backchannel logout uri not required but no user id existing for client: ' . $clientId);
+                $log::error('Exception while logging out session - backchannel logout uri session not required and user id does not exist, but should - for client: ' . $clientId);
                 return false;
             }
         }

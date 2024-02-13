@@ -839,7 +839,6 @@ class Pdo implements
                 $this->unsetRefreshToken($token['refresh_token']);
             }
         }
-
         return true;
     }
 
@@ -863,6 +862,7 @@ class Pdo implements
           user_id                               VARCHAR(80),
           backchannel_logout_uri                VARCHAR(2000),
           backchannel_logout_session_required   BOOLEAN,
+          logout_redirect_uri                   VARCHAR(2000),
           PRIMARY KEY (client_id)
         );
 
