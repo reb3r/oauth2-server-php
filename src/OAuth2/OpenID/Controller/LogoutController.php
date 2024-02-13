@@ -183,6 +183,10 @@ class LogoutController implements LogoutControllerInterface
             $session = $this->sessionTokenStorage->getSessionByToken($tokenForRefresh);
         }
 
+        if (!isset($code['client_id']) && !isset($session['session_id'])) {
+            return;
+        }
+        
         $clientId = $code['client_id'];
         $sessionId = $session['session_id'];
         $userId = $this->grantTypes[$grantType]->getUserId();
