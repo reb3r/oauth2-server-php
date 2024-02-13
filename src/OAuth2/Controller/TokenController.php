@@ -81,6 +81,7 @@ class TokenController implements TokenControllerInterface
      *
      * @param RequestInterface  $request  - Request object to grant access token
      * @param ResponseInterface $response - Response object
+     * @return bool|null|array
      */
     public function handleTokenRequest(RequestInterface $request, ResponseInterface $response)
     {
@@ -94,7 +95,11 @@ class TokenController implements TokenControllerInterface
                 'Pragma' => 'no-cache',
                 'Content-Type' => 'application/json'
             ));
+
+            return $token;
         }
+
+        return null;
     }
 
     /**

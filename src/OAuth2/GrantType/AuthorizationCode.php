@@ -159,6 +159,16 @@ class AuthorizationCode implements GrantTypeInterface
     }
 
     /**
+     * Get the session id
+     *
+     * @return array
+     */
+    public function getAuthCode()
+    {
+        return $this->authCode;
+    }
+
+    /**
      * Create access token
      *
      * @param AccessTokenInterface $accessToken

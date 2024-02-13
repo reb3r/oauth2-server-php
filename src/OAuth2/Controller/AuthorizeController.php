@@ -103,10 +103,11 @@ class AuthorizeController implements AuthorizeControllerInterface
      * @param ResponseInterface $response
      * @param boolean           $is_authorized
      * @param mixed             $user_id
+     * @param mixed             $sid
      * @return mixed|void
      * @throws InvalidArgumentException
      */
-    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null)
+    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null, $sid = null)
     {
         if (!is_bool($is_authorized)) {
             throw new InvalidArgumentException('Argument "is_authorized" must be a boolean.  This method must know if the user has granted access to the client.');
@@ -133,7 +134,7 @@ class AuthorizeController implements AuthorizeControllerInterface
         }
 
         // build the parameters to set in the redirect URI
-        if (!$params = $this->buildAuthorizeParameters($request, $response, $user_id)) {
+        if (!$params = $this->buildAuthorizeParameters($request, $response, $user_id, $sid)) {
             return;
         }
 
@@ -177,7 +178,7 @@ class AuthorizeController implements AuthorizeControllerInterface
      * @param mixed $user_id
      * @return array
      */
-    protected function buildAuthorizeParameters($request, $response, $user_id)
+    protected function buildAuthorizeParameters($request, $response, $user_id, $sid = null)
     {
         // @TODO: we should be explicit with this in the future
         $params = array(

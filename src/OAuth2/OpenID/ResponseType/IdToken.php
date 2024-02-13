@@ -69,8 +69,8 @@ class IdToken implements IdTokenInterface
         // create the id token.
         list($user_id, $auth_time) = $this->getUserIdAndAuthTime($userInfo);
         $userClaims = $this->userClaimsStorage->getUserClaims($user_id, $params['scope']);
-
-        $id_token = $this->createIdToken($params['client_id'], $userInfo, $params['nonce'], $userClaims, null);
+        $sid = $params['sid'] ?? null;
+        $id_token = $this->createIdToken($params['client_id'], $userInfo, $params['nonce'], $userClaims, null, $sid);
         $result["fragment"] = array('id_token' => $id_token);
         if (isset($params['state'])) {
             $result["fragment"]["state"] = $params['state'];
@@ -89,7 +89,7 @@ class IdToken implements IdTokenInterface
      * @param mixed  $access_token
      * @return mixed|string
      */
-    public function createIdToken($client_id, $userInfo, $nonce = null, $userClaims = null, $access_token = null)
+    public function createIdToken($client_id, $userInfo, $nonce = null, $userClaims = null, $access_token = null, $sid = null)
     {
         // pull auth_time from user info if supplied
         list($user_id, $auth_time) = $this->getUserIdAndAuthTime($userInfo);
@@ -113,6 +113,10 @@ class IdToken implements IdTokenInterface
 
         if ($access_token) {
             $token['at_hash'] = $this->createAtHash($access_token, $client_id);
+        }
+
+        if ($sid) {
+            $token['sid'] = $sid;
         }
 
         return $this->encodeToken($token, $client_id);
@@ -145,6 +149,29 @@ class IdToken implements IdTokenInterface
         $algorithm = $this->publicKeyStorage->getEncryptionAlgorithm($client_id);
 
         return $this->encryptionUtil->encode($token, $private_key, $algorithm);
+    }
+
+    /**
+     * @param string $token
+     * @param string $client_id
+     * @return mixed
+     */
+    public function decodeToken($token, $client_id = null)
+    {
+        // just decode the token, don't verify
+        if (!$tokenData = $this->encryptionUtil->decode($token, null, false)) {
+            return false;
+        }
+
+        if (!$client_id) {
+            $client_id  = isset($tokenData['aud']) ? $tokenData['aud'] : null;
+        }
+
+        $public_key = $this->publicKeyStorage->getPublicKey($client_id);
+        $algorithm  = $this->publicKeyStorage->getEncryptionAlgorithm($client_id);
+
+        // now that we have the client_id, verify the token
+        return $this->encryptionUtil->decode($token, $public_key, array($algorithm));
     }
 
     /**

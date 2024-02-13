@@ -199,19 +199,25 @@ class Bootstrap
         }
 
         // set up clients
-        $sql = 'INSERT INTO oauth_clients (client_id, client_secret, scope, grant_types) VALUES (?, ?, ?, ?)';
-        $pdo->prepare($sql)->execute(array('Test Client ID', 'TestSecret', 'clientscope1 clientscope2', null));
-        $pdo->prepare($sql)->execute(array('Test Client ID 2', 'TestSecret', 'clientscope1 clientscope2 clientscope3', null));
-        $pdo->prepare($sql)->execute(array('Test Default Scope Client ID', 'TestSecret', 'clientscope1 clientscope2', null));
-        $pdo->prepare($sql)->execute(array('oauth_test_client', 'testpass', null, 'implicit password'));
+        $sql = 'INSERT INTO oauth_clients (client_id, client_secret, scope, grant_types, backchannel_logout_uri, backchannel_logout_session_required, logout_redirect_uri) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        $pdo->prepare($sql)->execute(array('Test Client ID', 'TestSecret', 'clientscope1 clientscope2', null, null, 0, null));
+        $pdo->prepare($sql)->execute(array('Test Client ID 2', 'TestSecret', 'clientscope1 clientscope2 clientscope3', null, null, 0, null));
+        $pdo->prepare($sql)->execute(array('Test Default Scope Client ID', 'TestSecret', 'clientscope1 clientscope2', null, null, 0, null));
+        $pdo->prepare($sql)->execute(array('oauth_test_client', 'testpass', null, 'implicit password', null, 0, null));
+        $pdo->prepare($sql)->execute(array('Test Client Backchannel Logout', 'TestSecret', null, 'authorization_code', 'https://example.org', 0, 'https://example.org'));
+        $pdo->prepare($sql)->execute(array('Test Client Backchannel Logout No Uri', 'TestSecret', null, 'authorization_code', null, 0, null));
 
         // set up misc
         $sql = 'INSERT INTO oauth_access_tokens (access_token, client_id, expires, user_id) VALUES (?, ?, ?, ?)';
         $pdo->prepare($sql)->execute(array('testtoken', 'Some Client', date('Y-m-d H:i:s', strtotime('+1 hour')), null));
         $pdo->prepare($sql)->execute(array('accesstoken-openid-connect', 'Some Client', date('Y-m-d H:i:s', strtotime('+1 hour')), 'testuser'));
+        $pdo->prepare($sql)->execute(array('testcode3', 'Test Client Backchannel Logout No Uri', date('Y-m-d H:i:s', strtotime('+1 hour')), 'testuser'));
+        $pdo->prepare($sql)->execute(array('testcode4', 'Test Client Backchannel Logout', date('Y-m-d H:i:s', strtotime('+1 hour')), 'testuser'));
 
-        $sql = 'INSERT INTO oauth_authorization_codes (authorization_code, client_id, expires) VALUES (?, ?, ?)';
-        $pdo->prepare($sql)->execute(array('testcode', 'Some Client', date('Y-m-d H:i:s', strtotime('+1 hour'))));
+        $sql = 'INSERT INTO oauth_authorization_codes (authorization_code, client_id, expires, user_id, sid) VALUES (?, ?, ?, ?, ?)';
+        $pdo->prepare($sql)->execute(array('testcode', 'Some Client', date('Y-m-d H:i:s', strtotime('+1 hour')), null, null));
+        $pdo->prepare($sql)->execute(array('testcode4', 'Test Client Backchannel Logout', date('Y-m-d H:i:s', strtotime('+1 hour')), 'abcd123', 'sid123'));
+        $pdo->prepare($sql)->execute(array('testcode3', 'Test Client Backchannel Logout No Uri', date('Y-m-d H:i:s', strtotime('+1 hour')), null, null));
 
         $sql = 'INSERT INTO oauth_users (username, password, email, email_verified) VALUES (?, ?, ?, ?)';
         $pdo->prepare($sql)->execute(array('testuser', 'password', 'testuser@test.com', true));
@@ -225,6 +231,10 @@ class Bootstrap
 
         $sql = 'INSERT INTO oauth_jwt (client_id, subject, public_key) VALUES (?, ?, ?)';
         $pdo->prepare($sql)->execute(array('oauth_test_client', 'test_subject', $this->getTestPublicKey()));
+
+        $sql = 'INSERT INTO oauth_sessions (session_id, user_id, sid, expires) VALUES (?, ?, ?, ?)';
+        $pdo->prepare($sql)->execute(array('session123456', 'abcd123', 'sid123', date('Y-m-d H:i:s', strtotime('+1 hour'))));
+        $pdo->prepare($sql)->execute(array('2session123456', 'abcd123', 'sid1234', date('Y-m-d H:i:s', strtotime('-2 hour'))));
     }
 
     public function getSqliteDir()
