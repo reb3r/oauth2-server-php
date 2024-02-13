@@ -230,6 +230,10 @@ class LogoutController implements LogoutControllerInterface
             $clientIdTokenHint = $decodedIdToken['aud'] ?? null;
         }
 
+        if (!$clientIdTokenHint) {
+            return false;
+        }
+
         if ($clientId && $clientIdTokenHint && $clientIdTokenHint !== $clientId) {
             $response->setError(400, 'invalid_request', 'The client_id does not match the id_token_hint');
             return false;
