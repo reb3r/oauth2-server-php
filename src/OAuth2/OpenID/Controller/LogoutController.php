@@ -138,6 +138,11 @@ class LogoutController implements LogoutControllerInterface
     public function handleLogoutRP(LogInterface $log, $clientId, $sessionId)
     {
         $session = $this->sessionStorage->getSession($sessionId);
+
+        if(!$session) {
+            return false;
+        }
+
         $sid = $session['sid'] ?? null;
         $userId = $session['user_id'];
 
@@ -187,7 +192,7 @@ class LogoutController implements LogoutControllerInterface
             $session = $this->sessionTokenStorage->getSessionByToken($tokenForRefresh);
         }
 
-        if (!isset($code['client_id']) && !isset($session['session_id'])) {
+        if (!isset($code['client_id']) || !isset($session['session_id'])) {
             return;
         }
 
