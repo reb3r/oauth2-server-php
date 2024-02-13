@@ -166,6 +166,10 @@ class LogoutController implements LogoutControllerInterface
     {
         $grantType = $request->request('grant_type') ?? $request->query('grant_type');
 
+        if (!$grantType || (!($this->grantTypes[$grantType] instanceof AuthorizationCode) && !($this->grantTypes[$grantType] instanceof RefreshToken))) {
+            return;
+        }
+
         $sessionId = false;
         $userId = false;
         $clientId = null;
@@ -186,7 +190,7 @@ class LogoutController implements LogoutControllerInterface
         if (!isset($code['client_id']) && !isset($session['session_id'])) {
             return;
         }
-        
+
         $clientId = $code['client_id'];
         $sessionId = $session['session_id'];
         $userId = $this->grantTypes[$grantType]->getUserId();
