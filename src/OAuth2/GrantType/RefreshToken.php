@@ -128,7 +128,7 @@ class RefreshToken implements GrantTypeInterface
     /**
      * Get token
      *
-     * @return void
+     * @return array
      */
     public function getToken()
     {

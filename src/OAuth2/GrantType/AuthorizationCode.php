@@ -161,7 +161,7 @@ class AuthorizationCode implements GrantTypeInterface
     /**
      * Get the session id
      *
-     * @return void
+     * @return array
      */
     public function getAuthCode()
     {

@@ -117,6 +117,7 @@ class LogoutController implements LogoutControllerInterface
 
         foreach ($loggedInRPs as $loggedInRP) {
             $this->logoutRP($log, $loggedInRP['client_id'], $session_id, $sid, $user_id);
+            $this->loggedInRPStorage->removeLoggedInRP($session_id, $loggedInRP['client_id']);
         }
 
         $this->sessionTokenStorage->removeTokensBySession($session_id);
@@ -148,7 +149,10 @@ class LogoutController implements LogoutControllerInterface
         $this->sessionTokenStorage->removeTokensBySession($sessionId, $clientId);
         $this->sessionTokenStorage->removeSessionTokens($sessionId, $clientId);
 
-        return $this->logoutRP($log, $clientId, $sessionId, $sid, $userId);
+        $result = $this->logoutRP($log, $clientId, $sessionId, $sid, $userId);
+        $this->loggedInRPStorage->removeLoggedInRP($sessionId, $clientId);
+
+        return $result;
     }
 
     /**
@@ -160,29 +164,27 @@ class LogoutController implements LogoutControllerInterface
      */
     public function setHandleTokenSession(RequestInterface $request, $token)
     {
-        $grantType = $request->request('grant_type');
+        $grantType = $request->request('grant_type') ?? $request->query('grant_type');
 
         $sessionId = false;
         $userId = false;
         $clientId = null;
 
         if ($this->grantTypes[$grantType] instanceof AuthorizationCode) {
-            $authCode = $this->grantTypes[$grantType]->getAuthCode();
-            $userId = $this->grantTypes[$grantType]->getUserId();
-            $sid = $authCode['sid'] ?? null;
-            $session = $this->sessionStorage->getSessionBySid($sid);
-            $sessionId = $session['session_id'] ?? null;
-            $clientId = $authCode['client_id'] ?? null;
+            $code = $this->grantTypes[$grantType]->getAuthCode();            
+            $sid = $code['sid'] ?? null;
+            $session = $this->sessionStorage->getSessionBySid($sid);          
         }
 
         if ($this->grantTypes[$grantType] instanceof RefreshToken) {
-            $resfreshToken = $this->grantTypes[$grantType]->getToken();
-            $userId = $this->grantTypes[$grantType]->getUserId();
-            $token = $resfreshToken['token'] ?? null;
-            $sessionToken = $this->sessionTokenStorage->getSessionByToken($token);
-            $sessionId = $sessionToken['session_id'] ?? null;
-            $clientId = $resfreshToken['client_id'] ?? null;
+            $code = $this->grantTypes[$grantType]->getToken();
+            $tokenForRefresh = $code['token'] ?? null;
+            $session = $this->sessionTokenStorage->getSessionByToken($tokenForRefresh);
         }
+
+        $clientId = $code['client_id'] ?? null;
+        $sessionId = $session['session_id'] ?? null;
+        $userId = $this->grantTypes[$grantType]->getUserId();
 
         $this->setSession($sessionId, $userId);
 
@@ -206,33 +208,31 @@ class LogoutController implements LogoutControllerInterface
         $clientId = null;
         $clientIdTokenHint = null;
 
-        if ($request->request('client_id')) {
-            $clientId = $request->request('client_id');
-        }
+        $clientId = $request->request('client_id') ?? $request->query('client_id');
+        $idTokenHint = $request->request('id_token_hint') ?? $request->query('id_token_hint');
 
-        if ($request->query('client_id')) {
-            $clientId = $request->query('client_id');
-        }
-
-        if ($request->request('id_token_hint')) {
-            $decodedIdToken = $this->idToken->decodeToken($request->request('id_token_hint'));
+        if ($idTokenHint) {
+            $decodedIdToken = $this->idToken->decodeToken($idTokenHint);
             $clientIdTokenHint = $decodedIdToken['aud'] ?? null;
-        }
-
-        if ($request->query('id_token_hint')) {
-            $decodedIdToken = $this->idToken->decodeToken($request->query('id_token_hint'));
-            $clientIdTokenHint = $decodedIdToken['aud'] ?? null;
-        }
-
-        if (($request->request('client_id') && $request->request('id_token_hint')) || ($request->query('client_id') && $request->query('id_token_hint'))) {
-            if ($clientIdTokenHint !== $clientId) {
-                $response->setError(400, 'invalid_request', 'The client_id does not match the id_token_hint');
-                return false;
-            }
         }
 
         if (!$clientId && !$clientIdTokenHint) {
             return false;
+        }
+
+        if ($clientIdTokenHint !== $clientId) {
+            $response->setError(400, 'invalid_request', 'The client_id does not match the id_token_hint');
+            return false;
+        }
+
+        $postLogoutRedirectUri = $request->request('logout_redirect_uri') ?? $request->query('logout_redirect_uri');
+        if ($postLogoutRedirectUri && ($clientId || $clientIdTokenHint)) {
+            $id = $clientId ?? $clientIdTokenHint;
+            $client = $this->clientStorage->getClientDetails($id);
+            if ($client['logout_redirect_uri'] !== $postLogoutRedirectUri) {
+                $response->setError(400, 'invalid_request', 'The logout_redirect_uri does not match the client ones');
+                return false;
+            }
         }
 
         return true;
@@ -249,9 +249,6 @@ class LogoutController implements LogoutControllerInterface
     {
         $sid = UniqueToken::uniqueToken();
         $expires = time() + $this->config['session_lifetime'];
-        if ($session = $this->sessionStorage->getSession($sessionId)) {
-            return $session;
-        }
         $this->sessionStorage->setSession($sessionId, $userId, $sid, $expires);
         return [
             'session_id' => $sessionId,
@@ -310,7 +307,6 @@ class LogoutController implements LogoutControllerInterface
             return false;
         }
         
-        $this->loggedInRPStorage->removeLoggedInRP($sessionId, $clientId);
         return true;
     }
 

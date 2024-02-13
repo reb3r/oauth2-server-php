@@ -151,6 +151,11 @@ class IdToken implements IdTokenInterface
         return $this->encryptionUtil->encode($token, $private_key, $algorithm);
     }
 
+    /**
+     * @param string $token
+     * @param string $client_id
+     * @return mixed
+     */
     public function decodeToken($token, $client_id = null)
     {
         // just decode the token, don't verify

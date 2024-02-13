@@ -59,6 +59,7 @@ class AuthorizeController extends BaseAuthorizeController implements AuthorizeCo
      * @param RequestInterface $request
      * @param ResponseInterface $response
      * @param mixed $user_id
+     * @param string $sid
      * @return array
      */
     protected function buildAuthorizeParameters($request, $response, $user_id, $sid = null)

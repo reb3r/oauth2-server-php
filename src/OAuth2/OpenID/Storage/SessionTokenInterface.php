@@ -22,7 +22,7 @@ interface SessionTokenInterface
     public function setSessionToken($session_id, $token, $client_id, bool $is_refresh_token = false);
     
     /**
-     * Returns relations of tokens and session
+     * Returns data of relations table between tokens and session
      *
      * @param string $session_id    - user session id
      * @param string $client_id     - OPTIONAL the client id
