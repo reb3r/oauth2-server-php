@@ -861,7 +861,7 @@ class Pdo implements
           scope                                 VARCHAR(4000),
           user_id                               VARCHAR(80),
           backchannel_logout_uri                VARCHAR(2000),
-          backchannel_logout_session_required   BOOLEAN,
+          backchannel_logout_session_required   BOOLEAN         DEFAULT FALSE,
           logout_redirect_uri                   VARCHAR(2000),
           PRIMARY KEY (client_id)
         );

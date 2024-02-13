@@ -200,12 +200,12 @@ class Bootstrap
 
         // set up clients
         $sql = 'INSERT INTO oauth_clients (client_id, client_secret, scope, grant_types, backchannel_logout_uri, backchannel_logout_session_required, logout_redirect_uri) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        $pdo->prepare($sql)->execute(array('Test Client ID', 'TestSecret', 'clientscope1 clientscope2', null, null, false, null));
-        $pdo->prepare($sql)->execute(array('Test Client ID 2', 'TestSecret', 'clientscope1 clientscope2 clientscope3', null, null, false, null));
-        $pdo->prepare($sql)->execute(array('Test Default Scope Client ID', 'TestSecret', 'clientscope1 clientscope2', null, null, false, null));
-        $pdo->prepare($sql)->execute(array('oauth_test_client', 'testpass', null, 'implicit password', null, false, null));
-        $pdo->prepare($sql)->execute(array('Test Client Backchannel Logout', 'TestSecret', null, 'authorization_code', 'https://example.org', false, 'https://example.org'));
-        $pdo->prepare($sql)->execute(array('Test Client Backchannel Logout No Uri', 'TestSecret', null, 'authorization_code', null, false, null));
+        $pdo->prepare($sql)->execute(array('Test Client ID', 'TestSecret', 'clientscope1 clientscope2', null, null, 0, null));
+        $pdo->prepare($sql)->execute(array('Test Client ID 2', 'TestSecret', 'clientscope1 clientscope2 clientscope3', null, null, 0, null));
+        $pdo->prepare($sql)->execute(array('Test Default Scope Client ID', 'TestSecret', 'clientscope1 clientscope2', null, null, 0, null));
+        $pdo->prepare($sql)->execute(array('oauth_test_client', 'testpass', null, 'implicit password', null, 0, null));
+        $pdo->prepare($sql)->execute(array('Test Client Backchannel Logout', 'TestSecret', null, 'authorization_code', 'https://example.org', 0, 'https://example.org'));
+        $pdo->prepare($sql)->execute(array('Test Client Backchannel Logout No Uri', 'TestSecret', null, 'authorization_code', null, 0, null));
 
         // set up misc
         $sql = 'INSERT INTO oauth_access_tokens (access_token, client_id, expires, user_id) VALUES (?, ?, ?, ?)';
