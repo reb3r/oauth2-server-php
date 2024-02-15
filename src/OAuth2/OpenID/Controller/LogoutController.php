@@ -235,7 +235,7 @@ class LogoutController implements LogoutControllerInterface
             return false;
         }
 
-        $postLogoutRedirectUri = $request->request('logout_redirect_uri') ?? $request->query('logout_redirect_uri');
+        $postLogoutRedirectUri = $request->request('post_logout_redirect_uri') ?? $request->query('post_logout_redirect_uri');
 
         if ($postLogoutRedirectUri && ($clientId || $clientIdTokenHint)) {
             $id = $clientId ?? $clientIdTokenHint;
