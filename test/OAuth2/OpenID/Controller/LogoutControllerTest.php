@@ -512,7 +512,7 @@ class LogoutControllerTest extends TestCase
 
         $request = TestRequest::createPost(array(
             'id_token_hint' => $idToken,
-            'logout_redirect_uri' => 'https://example.org'
+            'post_logout_redirect_uri' => 'https://example.org'
         ));
 
         //mock guzzle for backchanel logout uri
@@ -546,7 +546,7 @@ class LogoutControllerTest extends TestCase
 
         $request = TestRequest::createPost(array(
             'id_token_hint' => $idToken,
-            'logout_redirect_uri' => 'test'
+            'post_logout_redirect_uri' => 'test'
         ));
 
         //mock guzzle for backchanel logout uri
