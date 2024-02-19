@@ -693,15 +693,11 @@ class Pdo implements
         return $stmt->execute(compact('session_id'));
     }
 
-    public function setLoggedInRPByToken($session_id, $access_token) 
+    public function setLoggedInRP($session_id, $client_id)
     {
-        if ($token = $this->getAccessToken($access_token)) {
-            if (!$this->getLoggedInRPForSession($session_id, $token['client_id'])) {
-                $stmt = $this->db->prepare(sprintf('INSERT INTO %s (session_id, client_id) VALUES (:session_id, :client_id)', $this->config['logged_in_rp_table']));
-                return $stmt->execute(array('session_id' => $session_id, 'client_id' => $token['client_id']));
-            }
-        }
-        return false;
+        $stmt = $this->db->prepare(sprintf('INSERT INTO %s (session_id, client_id) VALUES (:session_id, :client_id)', $this->config['logged_in_rp_table']));
+
+        return $stmt->execute(compact('session_id', 'client_id'));
     }
 
     public function getLoggedInRPForSession($session_id, $client_id)

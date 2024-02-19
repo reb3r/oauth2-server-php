@@ -564,7 +564,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
         $sid = null;
         // set session for backchannel logout if config is set
         if ($this->isBackchannelLogoutSupported() && $user_id && $session_id) {
-            $session = $this->getLogoutController()->setSession($session_id, $user_id);
+            $session = $this->getLogoutController()->updateOrSetSession($session_id, $user_id);
             $sid = $session['sid'] ?? null;
         }
         

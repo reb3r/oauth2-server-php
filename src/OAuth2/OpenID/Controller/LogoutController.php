@@ -200,14 +200,14 @@ class LogoutController implements LogoutControllerInterface
         $sessionId = $session['session_id'];
         $userId = $this->grantTypes[$grantType]->getUserId();
 
-        $this->setSession($sessionId, $userId);
+        $this->updateOrSetSession($sessionId, $userId);
 
         if (isset($token['refresh_token'])) {
             $this->sessionTokenStorage->setSessionToken($sessionId, $token['refresh_token'], $clientId, true);
         }
 
         $this->sessionTokenStorage->setSessionToken($sessionId, $token['access_token'], $clientId);
-        $this->loggedInRPStorage->setLoggedInRPByToken($sessionId, $token['access_token']);
+        $this->loggedInRPStorage->setLoggedInRP($sessionId, $clientId);
     }
 
     /**
@@ -254,23 +254,18 @@ class LogoutController implements LogoutControllerInterface
     }
 
     /**
-     * Set session with generated sid
+     * Updates or sets session with generated sid and updated expires timestamp
      *
      * @param string $sessionId
      * @param string $userId
      * @return array
      */
-    public function setSession($sessionId, $userId)
+    public function updateOrSetSession($sessionId, $userId)
     {
         $sid = UniqueToken::uniqueToken();
         $expires = time() + $this->config['session_lifetime'];
         $this->sessionStorage->setSession($sessionId, $userId, $sid, $expires);
-        return [
-            'session_id' => $sessionId,
-            'user_id' => $userId,
-            'sid' => $sid,
-            'expires' => $expires,
-        ];
+        return $this->sessionStorage->getSession($sessionId);
     }
 
     /**

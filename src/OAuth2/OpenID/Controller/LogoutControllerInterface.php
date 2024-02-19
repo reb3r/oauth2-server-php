@@ -46,11 +46,11 @@ interface LogoutControllerInterface
     public function validateRPLogoutRequest(RequestInterface $request, ResponseInterface $response);
 
     /**
-     * Set session with generated sid
+     * Updates or sets session with generated sid and updated expires timestamp
      *
      * @param string $sessionId
      * @param string $userId
      * @return array
      */
-    public function setSession($sessionId, $userId);
+    public function updateOrSetSession($sessionId, $userId);
 }

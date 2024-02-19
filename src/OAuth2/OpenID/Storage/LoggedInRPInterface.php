@@ -9,17 +9,16 @@ namespace OAuth2\OpenID\Storage;
  * https://openid.net/specs/openid-connect-backchannel-1_0.html
  */
 interface LoggedInRPInterface
-{
+{  
     /**
-     * Save the client and session for the logged in user by access token
-     * This function is a helper, if we don't have the client id
+     * Saves the logged in rps
      *
-     * @param string $session_id    - user session id
-     * @param string $token         - access token
+     * @param string $session_id
+     * @param string $client_id
      * @return boolean
      */
-    public function setLoggedInRPByToken($session_id, $token);
-    
+    public function setLoggedInRP($session_id, $client_id);
+
     /**
      * Get all logged in clients of a user by a specific session
      *

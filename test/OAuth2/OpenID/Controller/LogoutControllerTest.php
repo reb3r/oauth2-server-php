@@ -97,7 +97,7 @@ class LogoutControllerTest extends TestCase
 
         $this->storage->setSession($session_id, $user_id, $sid, $expires);
         $this->storage->setSessionToken($session_id, $token, $client_id);
-        $this->storage->setLoggedInRPByToken($session_id, $token);
+        $this->storage->setLoggedInRP($session_id, $client_id);
 
         // Try to logout
         $testLog = new TestLog();
@@ -144,7 +144,7 @@ class LogoutControllerTest extends TestCase
         $this->storage->setSession($session_id, $user_id, $sid, $expires);
         $this->storage->setAccessToken($token, $client_id, $user_id, $expires);
         $this->storage->setSessionToken($session_id, $token, $client_id);
-        $this->storage->setLoggedInRPByToken($session_id, $token);
+        $this->storage->setLoggedInRP($session_id, $client_id);
 
         // Try to logout
         $testLog = new TestLog();
@@ -195,7 +195,7 @@ class LogoutControllerTest extends TestCase
         $this->storage->setRefreshToken($refresh_token, $client_id, $user_id, $expires, 'offline_access');
         $this->storage->setSessionToken($session_id, $access_token, $client_id);
         $this->storage->setSessionToken($session_id, $refresh_token, $client_id, true);
-        $this->storage->setLoggedInRPByToken($session_id, $access_token);
+        $this->storage->setLoggedInRP($session_id, $client_id);
 
         // Try to logout
         $testLog = new TestLog();
@@ -247,7 +247,7 @@ class LogoutControllerTest extends TestCase
         $this->storage->setRefreshToken($refresh_token, $client_id, $user_id, $expires);
         $this->storage->setSessionToken($session_id, $access_token, $client_id);
         $this->storage->setSessionToken($session_id, $refresh_token, $client_id, true);
-        $this->storage->setLoggedInRPByToken($session_id, $access_token);
+        $this->storage->setLoggedInRP($session_id, $client_id);
 
         // Try to logout
         $testLog = new TestLog();
@@ -297,7 +297,7 @@ class LogoutControllerTest extends TestCase
 
         $this->storage->setSession($session_id, $user_id, $sid, $expires);
         $this->storage->setSessionToken($session_id, $token, $clientId);
-        $this->storage->setLoggedInRPByToken($session_id, $token);
+        $this->storage->setLoggedInRP($session_id, $clientId);
 
         // Try to logout
         $testLog = new TestLog();
@@ -345,7 +345,7 @@ class LogoutControllerTest extends TestCase
 
         $this->storage->setSession($session_id, $user_id, $sid, $expires);
         $this->storage->setSessionToken($session_id, $token, $client_id);
-        $this->storage->setLoggedInRPByToken($session_id, $token);
+        $this->storage->setLoggedInRP($session_id, $client_id);
         $accessToken = $this->storage->setAccessToken($token, $client_id, $user_id, time());
 
         // Try to logout
@@ -585,7 +585,7 @@ class LogoutControllerTest extends TestCase
 
         $logoutController = new LogoutController($this->storage, $this->storage, $this->storage, $this->storage, new LogoutToken($this->storage, $this->storage, $config), $idTokenResponse, $this->grantTypes, $config, $client);
 
-        $sessionResult = $logoutController->setSession('test123', 'user456');
+        $sessionResult = $logoutController->updateOrSetSession('test123', 'user456');
 
         $this->assertNotNull($sessionResult);
         $this->assertEquals('test123', $sessionResult['session_id']);
@@ -618,7 +618,7 @@ class LogoutControllerTest extends TestCase
         $logoutController = new LogoutController($this->storage, $this->storage, $this->storage, $this->storage, new LogoutToken($this->storage, $this->storage, $config), $idTokenResponse, $this->grantTypes, $config, $client);
 
         $initalSession = $this->storage->getSession($sessionId);
-        $sessionResult = $logoutController->setSession($sessionId, $userId);
+        $sessionResult = $logoutController->updateOrSetSession($sessionId, $userId);
 
         $this->assertNotEquals($initalSession['expires'], $sessionResult['expires']);
         $this->assertEquals($sessionId, $sessionResult['session_id']);
