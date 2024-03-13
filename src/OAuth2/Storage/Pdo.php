@@ -805,9 +805,15 @@ class Pdo implements
         $tokens = [];
         foreach ($sessionTokens as $sessionToken) {
             if ($sessionToken['is_refresh_token']) {
-                $tokens['refresh_tokens'][] = $this->getRefreshToken($sessionToken['token']);
+                $refreshToken = $this->getRefreshToken($sessionToken['token']);
+                if ($refreshToken) {
+                    $tokens['refresh_tokens'][] = $refreshToken;
+                }
             } else {
-                $tokens['access_tokens'][] = $this->getAccessToken($sessionToken['token']);
+                $accessToken = $this->getAccessToken($sessionToken['token']);
+                if ($accessToken) {
+                    $tokens['access_tokens'][] = $accessToken;
+                }
             }
         }
 
