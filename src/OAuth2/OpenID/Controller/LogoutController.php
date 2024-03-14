@@ -305,8 +305,15 @@ class LogoutController implements LogoutControllerInterface
             ]
         ];
 
+        $guzzleTimeout = $this->config['backchannel_logout_guzzle_timeout'] ?? 0;
+
+        $options = [
+            'timeout' => $guzzleTimeout,
+            'connect_timeout' => $guzzleTimeout,
+        ];
+
         try {
-            $response = $this->httpClient->request('POST', $client['backchannel_logout_uri'], $data);
+            $response = $this->httpClient->request('POST', $client['backchannel_logout_uri'], $data, $options);
         } catch (\Exception $e) {
             $log::error('Exception caught while logging out session with backchannel logout uri for client: ' . $clientId, [$e]);
             return false;
