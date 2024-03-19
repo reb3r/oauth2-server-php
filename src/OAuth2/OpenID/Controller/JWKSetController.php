@@ -4,8 +4,8 @@ namespace OAuth2\OpenID\Controller;
 use OAuth2\RequestInterface;
 use OAuth2\ResponseInterface;
 use OAuth2\Storage\PublicKeyInterface;
-use JOSE_JWK;
-use phpseclib\Crypt\RSA;
+use Strobotti\JWK\KeyFactory;
+use Strobotti\JWK\KeySet;
 
 class JWKSetController implements JWKSetControllerInterface
 {
@@ -18,17 +18,22 @@ class JWKSetController implements JWKSetControllerInterface
 
     public function handleJWKSetRequest(RequestInterface $request, ResponseInterface $response)
     {
-        $rsa = new RSA();
-        $rsa->loadKey($this->publicKeyStorage->getPublicKey());
+        $options = [
+            'use' => 'sig',
+            'alg' => 'RS256',
+            'kid' => 'eXaunmL',
+         ];
+         
+        $keyFactory = new KeyFactory();
+        $key = $keyFactory->createFromPem($this->publicKeyStorage->getPublicKey(), $options);
 
-        $jwk = JOSE_JWK::encode($rsa);
-        $jwks = [
-            $jwk->components
-        ];
+        $keySet = new KeySet();
+        $keySet->addKey($key);
+        $keys = $keySet->jsonSerialize();
 
         $response->setStatusCode(200);
         $response->addParameters([
-            'keys' => $jwks
+            $keys
         ]);
         $response->addHttpHeaders(array(
             'Cache-Control' => 'no-store',
