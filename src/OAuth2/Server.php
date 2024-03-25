@@ -457,7 +457,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *
      * @ingroup oauth2_section_4
      */
-    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null, $session_id = null)
+    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null, ?string $session_id = null)
     {
         $this->response = is_null($response) ? new Response() : $response;
 
@@ -551,13 +551,15 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *            - TRUE or FALSE depending on whether the user authorized the access.
      * @param mixed $user_id
      *            - Identifier of user who authorized the client
+     * @param string|null $session_id
+     *            - Session identifier of the user
      * @return ResponseInterface
      *
      * @see http://tools.ietf.org/html/rfc6749#section-4
      *
      * @ingroup oauth2_section_4
      */
-    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null, $session_id = null)
+    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null, ?string $session_id = null)
     {
         $this->response = $response;
 

@@ -45,10 +45,10 @@ interface AuthorizeControllerInterface
      * @param ResponseInterface $response
      * @param $is_authorized
      * @param null $user_id
-     * @param null $sid
+     * @param string|null $sid
      * @return mixed
      */
-    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null, $sid = null);
+    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null, ?string $sid = null);
 
     /**
      * @param RequestInterface $request
