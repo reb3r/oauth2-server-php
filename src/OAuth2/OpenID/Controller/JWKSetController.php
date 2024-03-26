@@ -1,11 +1,11 @@
 <?php
 namespace OAuth2\OpenID\Controller;
 
+use Jose\Component\Core\JWKSet;
+use Jose\Component\KeyManagement\JWKFactory;
 use OAuth2\RequestInterface;
 use OAuth2\ResponseInterface;
 use OAuth2\Storage\PublicKeyInterface;
-use Strobotti\JWK\KeyFactory;
-use Strobotti\JWK\KeySet;
 
 class JWKSetController implements JWKSetControllerInterface
 {
@@ -18,18 +18,10 @@ class JWKSetController implements JWKSetControllerInterface
 
     public function handleJWKSetRequest(RequestInterface $request, ResponseInterface $response)
     {
-        $options = [
-            'use' => 'sig',
-            'alg' => 'RS256',
-            'kid' => 'eXaunmL',
-         ];
-         
-        $keyFactory = new KeyFactory();
-        $key = $keyFactory->createFromPem($this->publicKeyStorage->getPublicKey(), $options);
-
-        $keySet = new KeySet();
-        $keySet->addKey($key);
-        $keys = $keySet->jsonSerialize();
+        
+        $key = JWKFactory::createFromKey($this->publicKeyStorage->getPublicKey());
+        $keys = new JWKSet([$key]);
+        $keys = json_encode($keys);
 
         $response->setStatusCode(200);
         $response->addParameters([
