@@ -21,7 +21,6 @@ class JWKSetController implements JWKSetControllerInterface
         
         $key = JWKFactory::createFromKey($this->publicKeyStorage->getPublicKey());
         $keys = new JWKSet([$key]);
-        $keys = json_encode($keys);
 
         $response->setStatusCode(200);
         $response->addParameters([
