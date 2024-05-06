@@ -23,7 +23,7 @@ class JWKSetController implements JWKSetControllerInterface
 
         $response->setStatusCode(200);
         $response->addParameters([
-            'keys' => $keys->all()
+            'keys' => array_values($keys->all())
         ]);
         $response->addHttpHeaders(array(
             'Cache-Control' => 'no-store',
