@@ -18,13 +18,12 @@ class JWKSetController implements JWKSetControllerInterface
 
     public function handleJWKSetRequest(RequestInterface $request, ResponseInterface $response)
     {
-        
         $key = JWKFactory::createFromKey($this->publicKeyStorage->getPublicKey());
         $keys = new JWKSet([$key]);
 
         $response->setStatusCode(200);
         $response->addParameters([
-            $keys
+            'keys' => array_values($keys->all())
         ]);
         $response->addHttpHeaders(array(
             'Cache-Control' => 'no-store',
