@@ -188,7 +188,7 @@ class LogoutController implements LogoutControllerInterface
 
         if ($this->grantTypes[$grantType] instanceof RefreshToken) {
             $code = $this->grantTypes[$grantType]->getToken();
-            $tokenForRefresh = $code['token'];
+            $tokenForRefresh = $code['refresh_token'];
             $session = $this->sessionTokenStorage->getSessionByToken($tokenForRefresh);
         }
 
