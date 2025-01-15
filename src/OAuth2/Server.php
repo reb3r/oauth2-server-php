@@ -487,7 +487,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      * @param RequestInterface $request
      * @param ResponseInterface|null $response
      * @return boolean
-     * 
+     *
      * @see https://openid.net/specs/openid-connect-rpinitiated-1_0.html#ValidationAndErrorHandling
      */
     public function handleValidateRPLogoutRequest(RequestInterface $request, ResponseInterface $response = null)
@@ -569,7 +569,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
             $session = $this->getLogoutController()->updateOrSetSession($session_id, $user_id);
             $sid = $session['sid'] ?? null;
         }
-        
+
         $this->getAuthorizeController()->handleAuthorizeRequest($request, $this->response, $is_authorized, $user_id, $sid);
 
         return $this->response;
@@ -639,20 +639,21 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
 
     /**
      * Logout the user from all logged in rps
-     * 
      *
      * @param LogInterface $log
      * @param string $session_id
      *            - Session identifier of the application
      * @param mixed $user_id
      *            - Identifier of user who authorized the client
+     * @param string[]|null $clientsToExcludeFromBackchannelLogout
+     *            - An array of client ids that are ignored while sending a backchannel logout request
      * @return bool
-     * 
+     *
      * @see https://openid.net/specs/openid-connect-backchannel-1_0.html#Backchannel
      */
-    public function handleLogoutSession(LogInterface $log, $session_id, $user_id = null)
+    public function handleLogoutSession(LogInterface $log, $session_id, $user_id = null, ?array $clientsToExcludeFromBackchannelLogout = null)
     {
-        return $this->getLogoutController()->handleLogoutSession($log, $session_id, $user_id);
+        return $this->getLogoutController()->handleLogoutSession($log, $session_id, $user_id, $clientsToExcludeFromBackchannelLogout);
     }
 
     /**
@@ -663,7 +664,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      * @param string $session_id
      *            - Session identifier of the application
      * @return bool
-     * 
+     *
      * @see https://openid.net/specs/openid-connect-rpinitiated-1_0.html
      */
     public function handleLogoutRP(LogInterface $log, $client_id, $session_id)

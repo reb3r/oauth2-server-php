@@ -92,9 +92,10 @@ class LogoutController implements LogoutControllerInterface
      * @param LogInterface $log
      * @param string $session_id
      * @param string|null $user_id
+     * @param string[]|null $clientsToExcludeFromBackchannelLogout
      * @return boolean
      */
-    public function handleLogoutSession(LogInterface $log, string $session_id, string $user_id = null)
+    public function handleLogoutSession(LogInterface $log, string $session_id, string $user_id = null, ?array $clientsToExcludeFromBackchannelLogout = null)
     {
         $session = $this->sessionStorage->getSession($session_id);
 
@@ -116,7 +117,9 @@ class LogoutController implements LogoutControllerInterface
         }
 
         foreach ($loggedInRPs as $loggedInRP) {
-            $this->logoutRP($log, $loggedInRP['client_id'], $session_id, $sid, $user_id);
+            if (! $clientsToExcludeFromBackchannelLogout || ! in_array($loggedInRP['client_id'], $clientsToExcludeFromBackchannelLogout)) {
+                $this->logoutRP($log, $loggedInRP['client_id'], $session_id, $sid, $user_id);
+            }
             $this->loggedInRPStorage->removeLoggedInRP($session_id, $loggedInRP['client_id']);
         }
 
@@ -181,7 +184,7 @@ class LogoutController implements LogoutControllerInterface
         $code = null;
 
         if ($this->grantTypes[$grantType] instanceof AuthorizationCode) {
-            $code = $this->grantTypes[$grantType]->getAuthCode();      
+            $code = $this->grantTypes[$grantType]->getAuthCode();
             $sid = $code['sid'];
             $session = $this->sessionStorage->getSessionBySid($sid);
         }
@@ -320,7 +323,7 @@ class LogoutController implements LogoutControllerInterface
             $log::error('Unexpected status code while logging out session with backchannel logout uri for client: ' . $clientId, ['statusCode' => $response->getStatusCode(), 'body' => $response->getBody()->getContents()]);
             return false;
         }
-        
+
         return true;
     }
 
