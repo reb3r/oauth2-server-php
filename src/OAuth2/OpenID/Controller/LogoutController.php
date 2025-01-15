@@ -117,12 +117,10 @@ class LogoutController implements LogoutControllerInterface
         }
 
         foreach ($loggedInRPs as $loggedInRP) {
-            if($clientsToExcludeFromBackchannelLogout && in_array($loggedInRP['client_id'], $clientsToExcludeFromBackchannelLogout)) {
-                $this->loggedInRPStorage->removeLoggedInRP($session_id, $loggedInRP['client_id']);
-            } else {
+            if (! $clientsToExcludeFromBackchannelLogout || ! in_array($loggedInRP['client_id'], $clientsToExcludeFromBackchannelLogout)) {
                 $this->logoutRP($log, $loggedInRP['client_id'], $session_id, $sid, $user_id);
-                $this->loggedInRPStorage->removeLoggedInRP($session_id, $loggedInRP['client_id']);
             }
+            $this->loggedInRPStorage->removeLoggedInRP($session_id, $loggedInRP['client_id']);
         }
 
         $this->sessionTokenStorage->removeTokensBySession($session_id);
