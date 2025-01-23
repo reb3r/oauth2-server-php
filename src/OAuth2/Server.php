@@ -457,7 +457,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *
      * @ingroup oauth2_section_4
      */
-    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null, ?string $session_id = null)
+    public function handleTokenRequest(RequestInterface $request, ResponseInterface $response = null)
     {
         $this->response = is_null($response) ? new Response() : $response;
 
