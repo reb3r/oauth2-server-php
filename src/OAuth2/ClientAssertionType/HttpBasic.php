@@ -115,7 +115,15 @@ class HttpBasic implements ClientAssertionTypeInterface
     public function getClientCredentials(RequestInterface $request, ResponseInterface $response = null)
     {
         if (!is_null($request->headers('PHP_AUTH_USER')) && !is_null($request->headers('PHP_AUTH_PW'))) {
-            return array('client_id' => $request->headers('PHP_AUTH_USER'), 'client_secret' => $request->headers('PHP_AUTH_PW'));
+            return [
+                /**
+                 * client credentials are URL-encoded before being encoded in the HTTP Basic header, so we decode them here
+                 * @see http://tools.ietf.org/html/rfc6749#section-2.3.1
+                 * Custom implementation is necessary for utf-8 compatibility with spaces encoded as %20
+                 */
+                'client_id' => rawurldecode(str_replace('+', '%20', $request->headers('PHP_AUTH_USER'))),
+                'client_secret' => rawurldecode(str_replace('+', '%20', $request->headers('PHP_AUTH_PW'))),
+            ];
         }
 
         if ($this->config['allow_credentials_in_request_body']) {
