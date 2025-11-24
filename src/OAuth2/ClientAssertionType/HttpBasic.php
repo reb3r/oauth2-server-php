@@ -119,10 +119,9 @@ class HttpBasic implements ClientAssertionTypeInterface
                 /**
                  * client credentials are URL-encoded before being encoded in the HTTP Basic header, so we decode them here
                  * @see http://tools.ietf.org/html/rfc6749#section-2.3.1
-                 * Custom implementation is necessary for utf-8 compatibility with spaces encoded as %20
                  */
-                'client_id' => rawurldecode(str_replace('+', '%20', $request->headers('PHP_AUTH_USER'))),
-                'client_secret' => rawurldecode(str_replace('+', '%20', $request->headers('PHP_AUTH_PW'))),
+                'client_id' => urldecode($request->headers('PHP_AUTH_USER')),
+                'client_secret' => urldecode($request->headers('PHP_AUTH_PW')),
             ];
         }
 
