@@ -285,7 +285,7 @@ class LogoutController implements LogoutControllerInterface
     {
         $client = $this->clientStorage->getClientDetails($clientId);
 
-        if (!$client['backchannel_logout_uri']) {
+        if (empty($client) || !$client['backchannel_logout_uri']) {
             return false;
         }
 
