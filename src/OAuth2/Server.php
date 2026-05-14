@@ -490,7 +490,7 @@ class Server implements ResourceControllerInterface, AuthorizeControllerInterfac
      *
      * @see https://openid.net/specs/openid-connect-rpinitiated-1_0.html#ValidationAndErrorHandling
      */
-    public function handleValidateRPLogoutRequest(RequestInterface $request, ResponseInterface $response = null)
+    public function handleValidateRPLogoutRequest(RequestInterface $request, ?ResponseInterface $response = null)
     {
         return $this->getLogoutController()->validateRPLogoutRequest($request, $response);
     }

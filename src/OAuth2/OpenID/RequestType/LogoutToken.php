@@ -40,7 +40,7 @@ class LogoutToken implements LogoutTokenInterface
      * @param EncryptionInterface $encryptionUtil
      * @throws LogicException
      */
-    public function __construct(UserClaimsInterface $userClaimsStorage, PublicKeyInterface $publicKeyStorage, array $config = array(), EncryptionInterface $encryptionUtil = null)
+    public function __construct(UserClaimsInterface $userClaimsStorage, PublicKeyInterface $publicKeyStorage, array $config = array(), ?EncryptionInterface $encryptionUtil = null)
     {
         $this->userClaimsStorage = $userClaimsStorage;
         $this->publicKeyStorage = $publicKeyStorage;

@@ -15,7 +15,7 @@ interface LogoutControllerInterface
      * @param string|null $user_id
      * @return boolean
      */
-    public function handleLogoutSession(LogInterface $log, string $session_id, string $user_id = null);
+    public function handleLogoutSession(LogInterface $log, string $session_id, ?string $user_id = null);
 
     /**
      * Handles the logout for a certain rp

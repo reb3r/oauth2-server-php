@@ -64,7 +64,7 @@ class LogoutController implements LogoutControllerInterface
      */
     protected $httpClient;
 
-    public function __construct(SessionInterface $sessionStorage, LoggedInRPInterface $loggedInRPStorage, ClientInterface $clientStorage, SessionTokenInterface $sessionTokenStorage, LogoutTokenInterface $logoutToken, IdTokenInterface $idToken, array $grantTypes = array(), array $config = array(), Client $httpClient = null)
+    public function __construct(SessionInterface $sessionStorage, LoggedInRPInterface $loggedInRPStorage, ClientInterface $clientStorage, SessionTokenInterface $sessionTokenStorage, LogoutTokenInterface $logoutToken, IdTokenInterface $idToken, array $grantTypes = array(), array $config = array(), ?Client $httpClient = null)
     {
         $this->sessionStorage = $sessionStorage;
         $this->loggedInRPStorage = $loggedInRPStorage;
@@ -95,7 +95,7 @@ class LogoutController implements LogoutControllerInterface
      * @param string[]|null $clientsToExcludeFromBackchannelLogout
      * @return boolean
      */
-    public function handleLogoutSession(LogInterface $log, string $session_id, string $user_id = null, ?array $clientsToExcludeFromBackchannelLogout = null)
+    public function handleLogoutSession(LogInterface $log, string $session_id, ?string $user_id = null, ?array $clientsToExcludeFromBackchannelLogout = null)
     {
         $session = $this->sessionStorage->getSession($session_id);
 
