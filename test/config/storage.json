@@ -140,7 +140,7 @@
     },
     "jwt": {
         "Test Client ID": {
-            "key": "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5/SxVlE8gnpFqCxgl2wjhzY7u\ncEi00s0kUg3xp7lVEvgLgYcAnHiWp+gtSjOFfH2zsvpiWm6Lz5f743j/FEzHIO1o\nwR0p4d9pOaJK07d01+RzoQLOIQAgXrr4T1CCWUesncwwPBVCyy2Mw3Nmhmr9MrF8\nUlvdRKBxriRnlP3qJQIDAQAB\n-----END PUBLIC KEY-----",
+            "key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsbZDRKQG5K2TutHgH6KV\nsj7BovTwMRRPxXzFR0ZOghYhYceQQF5z+aoAscKOiS59UB1hpVb++tUofmrhZI7D\nULi/B+ngyWBGR627Mfr2PGFXo5Er+JdsGj5aIjlMXW9yUgOY952HcbvC7wscuhHZ\naitZYTYMcXq8IJi0mmpZv3i8hKO0RPdoMDqYfcNntnLSkwojEhERdqZq2l0mPqOI\nFY0FK8BrnUIkiu/rlGYk8NAywu+Aoorf0qk/tq316wjWQ+UN7nuO7M2JU2CEsLfT\nxG4E1T6dEWtqIW33Ho530M5xwXu8omQoel0zMorrpUNLBflMUBFbVtls0ZTXDs4u\nwQIDAQAB\n-----END PUBLIC KEY-----",
             "subject": "testuser@ourdomain.com"
         },
         "Test Client ID PHP-5.2": {
