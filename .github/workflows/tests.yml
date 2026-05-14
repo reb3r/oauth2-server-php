@@ -35,7 +35,7 @@ jobs:
         options: --health-cmd="pg_isready -h localhost" --health-interval=10s --health-timeout=5s --health-retries=5
     strategy:
       matrix:
-        php: [ 8.1, 8.2 ]
+        php: [ 8.2, 8.3, 8.4, 8.5 ]
     name: "PHP ${{ matrix.php }} Unit Test"
     steps:
       - uses: actions/checkout@v2
@@ -61,7 +61,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.4
       - name: Install composer dependencies
         uses: nick-invision/retry@v1
         with:
@@ -69,6 +69,4 @@ jobs:
           max_attempts: 3
           command: composer install
       - name: Run PHPStan
-        run: |
-          composer require phpstan/phpstan
-          vendor/bin/phpstan analyse --level=0 src/
+        run: vendor/bin/phpstan analyse --level=0 src/
