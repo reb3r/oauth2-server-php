@@ -144,12 +144,6 @@ class AccessToken implements AccessTokenInterface
                 return bin2hex($randomData);
             }
         }
-        if (function_exists('mcrypt_create_iv')) {
-            $randomData = mcrypt_create_iv(20, MCRYPT_DEV_URANDOM);
-            if ($randomData !== false && strlen($randomData) === 20) {
-                return bin2hex($randomData);
-            }
-        }
         if (@file_exists('/dev/urandom')) { // Get 100 bytes of random data
             $randomData = file_get_contents('/dev/urandom', false, null, 0, 20);
             if ($randomData !== false && strlen($randomData) === 20) {

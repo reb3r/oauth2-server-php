@@ -199,12 +199,6 @@ parameters:
 			path: src/OAuth2/ResponseType/AccessToken.php
 
 		-
-			message: '#^Constant MCRYPT_DEV_URANDOM not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: src/OAuth2/ResponseType/AccessToken.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
@@ -257,12 +251,6 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: src/OAuth2/ResponseType/AccessToken.php
-
-		-
-			message: '#^Constant MCRYPT_DEV_URANDOM not found\.$#'
-			identifier: constant.notFound
-			count: 1
-			path: src/OAuth2/ResponseType/AuthorizationCode.php
 
 		-
 			message: '''

@@ -88,8 +88,6 @@ class AuthorizationCode implements AuthorizationCodeInterface
             $randomData = random_bytes(100);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             $randomData = openssl_random_pseudo_bytes(100);
-        } elseif (function_exists('mcrypt_create_iv')) {
-            $randomData = mcrypt_create_iv(100, MCRYPT_DEV_URANDOM);
         } elseif (@file_exists('/dev/urandom')) { // Get 100 bytes of random data
             $randomData = file_get_contents('/dev/urandom', false, null, 0, 100) . uniqid(mt_rand(), true);
         } else {
