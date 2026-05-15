@@ -52,7 +52,7 @@ jobs:
           max_attempts: 3
           command: composer install
       - name: Run PHPUnit
-        run: vendor/bin/phpunit -v
+        run: vendor/bin/phpunit
   phpstan:
     name: "PHPStan"
     runs-on: ubuntu-latest

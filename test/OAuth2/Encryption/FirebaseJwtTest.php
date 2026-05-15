@@ -102,7 +102,7 @@ EOD;
         $this->assertFalse($payload);
     }
 
-    public function provideClientCredentials()
+    public static function provideClientCredentials()
     {
         $storage = Bootstrap::getInstance()->getMemoryStorage();
         $client_id  = 'Test Client ID';

@@ -8,11 +8,9 @@ use OAuth2\Request\TestRequest;
 use OAuth2\ResponseType\AuthorizationCode;
 use OAuth2\Storage\Bootstrap;
 use PHPUnit\Framework\TestCase;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class ServerTest extends TestCase
 {
-    use ExpectPHPException;
 
     public function testGetAuthorizeControllerWithNoClientStorageThrowsException()
     {
@@ -513,7 +511,8 @@ class ServerTest extends TestCase
 
     public function testUsingOpenIDConnectWithAllowImplicitWithoutTokenStorageThrowsException()
     {
-        $this->expectErrorMessage('OAuth2\ResponseType\AccessTokenInterface');
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('OAuth2\ResponseType\AccessTokenInterface');
         $client = $this->createMock('OAuth2\Storage\ClientInterface');
         $userclaims = $this->createMock('OAuth2\OpenID\Storage\UserClaimsInterface');
         $pubkey = $this->createMock('OAuth2\Storage\PublicKeyInterface');
@@ -591,7 +590,8 @@ class ServerTest extends TestCase
         $token = $this->createMock('OAuth2\Storage\AccessTokenInterface');
         $authcode = $this->createMock('OAuth2\Storage\AuthorizationCodeInterface');
 
-        $this->expectErrorMessage('OAuth2\OpenID\Storage\AuthorizationCodeInterface');
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('OAuth2\OpenID\Storage\AuthorizationCodeInterface');
         $server = new Server(array($client, $userclaims, $pubkey, $token, $authcode), array(
             'use_openid_connect' => true,
             'issuer' => 'someguy'
