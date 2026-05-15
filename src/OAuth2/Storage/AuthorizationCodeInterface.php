@@ -30,8 +30,7 @@ interface AuthorizationCodeInterface
      * @param $code
      * Authorization code to be check with.
      *
-     * @return
-     * An associative array as below, and NULL if the code is invalid
+     * @return array|null An associative array as below, and NULL if the code is invalid
      * @code
      * return array(
      *     "client_id"    => CLIENT_ID,      // REQUIRED Stored client identifier

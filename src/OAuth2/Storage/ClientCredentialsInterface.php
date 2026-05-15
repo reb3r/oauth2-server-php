@@ -19,9 +19,7 @@ interface ClientCredentialsInterface extends ClientInterface
      * @param $client_secret
      * (optional) If a secret is required, check that they've given the right one.
      *
-     * @return
-     * TRUE if the client credentials are valid, and MUST return FALSE if it isn't.
-     * @endcode
+     * @return bool TRUE if the client credentials are valid, and MUST return FALSE if it isn't.
      *
      * @see http://tools.ietf.org/html/rfc6749#section-3.1
      *
@@ -36,9 +34,7 @@ interface ClientCredentialsInterface extends ClientInterface
      * @param $client_id
      * Client identifier to be check with.
      *
-     * @return
-     * TRUE if the client is public, and FALSE if it isn't.
-     * @endcode
+     * @return bool TRUE if the client is public, and FALSE if it isn't.
      *
      * @see http://tools.ietf.org/html/rfc6749#section-2.3
      * @see https://github.com/bshaffer/oauth2-server-php/issues/257

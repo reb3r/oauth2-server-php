@@ -62,8 +62,7 @@ class AuthorizationCode implements AuthorizationCodeInterface
     }
 
     /**
-     * @return
-     * TRUE if the grant type requires a redirect_uri, FALSE if not
+     * @return bool TRUE if the grant type requires a redirect_uri, FALSE if not
      */
     public function enforceRedirect()
     {
@@ -76,8 +75,7 @@ class AuthorizationCode implements AuthorizationCodeInterface
      * Implementing classes may want to override this function to implement
      * other auth code generation schemes.
      *
-     * @return
-     * An unique auth code.
+     * @return string An unique auth code.
      *
      * @ingroup oauth2_section_4
      */

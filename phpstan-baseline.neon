@@ -91,37 +91,10 @@ parameters:
 			path: src/OAuth2/ResponseType/AccessToken.php
 
 		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				An unique auth code\.\)\: Unexpected token "\\n     \* ", expected type at offset 189 on line 7$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/ResponseType/AuthorizationCode.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				TRUE if the grant type requires a redirect_uri, FALSE if not\)\: Unexpected token "\\n     \* ", expected type at offset 18 on line 2$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/ResponseType/AuthorizationCode.php
-
-		-
 			message: '#^Parameter \#1 \$prefix of function uniqid expects string, int\<0, max\> given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/OAuth2/ResponseType/AuthorizationCode.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				TRUE if the grant type requires a redirect_uri, FALSE if not\)\: Unexpected token "\\n     \* ", expected type at offset 18 on line 2$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/ResponseType/AuthorizationCodeInterface.php
 
 		-
 			message: '#^Right side of && is always true\.$#'
@@ -250,52 +223,6 @@ parameters:
 			path: src/OAuth2/Server.php
 
 		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				An associative array as below, and NULL if the code is invalid\)\: Unexpected token "\\n     \* ", expected type at offset 302 on line 11$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/AuthorizationCodeInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				TRUE if the client credentials are valid, and MUST return FALSE if it isn't\.\)\: Unexpected token "\\n     \* ", expected type at offset 267 on line 9$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/ClientCredentialsInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				TRUE if the client is public, and FALSE if it isn't\.\)\: Unexpected token "\\n     \* ", expected type at offset 235 on line 8$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/ClientCredentialsInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				STRING the space\-delineated scope list for the specified client_id\)\: Unexpected token "\\n     \* ", expected type at offset 74 on line 4$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/ClientInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				TRUE if the grant type is supported by this client identifier, and
-				FALSE if it isn't\.\)\: Unexpected token "\\n     \* ", expected type at offset 334 on line 12$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/ClientInterface.php
-
-		-
 			message: '#^Method OAuth2\\Storage\\JwtAccessToken\:\:getAccessToken\(\) should return array\|null but returns false\.$#'
 			identifier: return.type
 			count: 2
@@ -338,30 +265,19 @@ parameters:
 			path: src/OAuth2/Storage/JwtAccessToken.php
 
 		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				An associative array as below, and return NULL if the jti does not exist\.
-				\- issuer\: Stored client identifier\.
-				\- subject\: Stored subject\.
-				\- audience\: Stored audience\.
-				\- expires\: Stored expiration in unix timestamp\.
-				\- jti\: The stored jti\.\)\: Unexpected token "\\n     \* ", expected type at offset 440 on line 19$#
-			'''
-			identifier: phpDoc.parseError
+			message: '#^Method OAuth2\\Storage\\Memory\:\:getAuthorizationCode\(\) should return array\|null but returns false\.$#'
+			identifier: return.type
 			count: 1
-			path: src/OAuth2/Storage/JwtBearerInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				STRING Return the public key for the client_id if it exists, and MUST return FALSE if it doesn't\.\)\: Unexpected token "\\n     \* ", expected type at offset 156 on line 7$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/JwtBearerInterface.php
+			path: src/OAuth2/Storage/Memory.php
 
 		-
 			message: '#^Method OAuth2\\Storage\\Memory\:\:getClientDetails\(\) should return array but returns false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Storage/Memory.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\Memory\:\:getClientScope\(\) should return string\|null but returns false\.$#'
 			identifier: return.type
 			count: 1
 			path: src/OAuth2/Storage/Memory.php
@@ -379,54 +295,16 @@ parameters:
 			path: src/OAuth2/Storage/Pdo.php
 
 		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				An associative array as below, and NULL if the refresh_token is
-				invalid\:
-				\- refresh_token\: Refresh token identifier\.
-				\- client_id\: Client identifier\.
-				\- user_id\: User identifier\.
-				\- expires\: Expiration unix timestamp, or 0 if the token doesn't expire\.
-				\- scope\: \(optional\) Scope values in space\-separated string\.\)\: Unexpected token "\\n     \* ", expected type at offset 265 on line 11$#
-			'''
-			identifier: phpDoc.parseError
+			message: '#^Method OAuth2\\Storage\\Redis\:\:getClientKey\(\) should return string\|false but returns null\.$#'
+			identifier: return.type
 			count: 1
-			path: src/OAuth2/Storage/RefreshTokenInterface.php
+			path: src/OAuth2/Storage/Redis.php
 
 		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				TRUE if it exists, FALSE otherwise\.\)\: Unexpected token "\\n     \* ", expected type at offset 139 on line 7$#
-			'''
-			identifier: phpDoc.parseError
+			message: '#^Method OAuth2\\Storage\\Redis\:\:getClientScope\(\) should return string\|null but returns false\.$#'
+			identifier: return.type
 			count: 1
-			path: src/OAuth2/Storage/ScopeInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				string representation of default scope, null if
-				scopes are not defined, or false to force scope
-				request by the client
-
-				ex\:
-				    'default'
-				ex\:
-				    null\)\: Unexpected token "\\n     \* ", expected type at offset 399 on line 11$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/ScopeInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @return has invalid value \(
-				TRUE if the username and password are valid, and FALSE if it isn't\.
-				Moreover, if the username and password are valid, and you want to\)\: Unexpected token "\\n     \* ", expected type at offset 458 on line 16$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/Storage/UserCredentialsInterface.php
+			path: src/OAuth2/Storage/Redis.php
 
 		-
 			message: '#^Constant MCRYPT_DEV_URANDOM not found\.$#'

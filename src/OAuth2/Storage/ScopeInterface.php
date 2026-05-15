@@ -17,8 +17,7 @@ interface ScopeInterface
      * @param $scope
      * A space-separated string of scopes.
      *
-     * @return
-     * TRUE if it exists, FALSE otherwise.
+     * @return bool TRUE if it exists, FALSE otherwise.
      */
     public function scopeExists($scope);
 
@@ -32,10 +31,8 @@ interface ScopeInterface
      * @param $client_id
      * An optional client id that can be used to return customized default scopes.
      *
-     * @return
-     * string representation of default scope, null if
-     * scopes are not defined, or false to force scope
-     * request by the client
+     * @return string|false|null string representation of default scope, null if
+     * scopes are not defined, or false to force scope request by the client
      *
      * ex:
      *     'default'
