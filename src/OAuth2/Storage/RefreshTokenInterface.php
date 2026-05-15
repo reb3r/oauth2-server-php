@@ -21,9 +21,7 @@ interface RefreshTokenInterface
      * @param $refresh_token
      * Refresh token to be check with.
      *
-     * @return
-     * An associative array as below, and NULL if the refresh_token is
-     * invalid:
+     * @return array|null An associative array as below, and NULL if the refresh_token is invalid:
      * - refresh_token: Refresh token identifier.
      * - client_id: Client identifier.
      * - user_id: User identifier.

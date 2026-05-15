@@ -86,7 +86,7 @@ class Scope implements ScopeInterface
     }
 
     /**
-     * @param null $client_id
+     * @param string|null $client_id
      * @return mixed
      */
     public function getDefaultScope($client_id = null)

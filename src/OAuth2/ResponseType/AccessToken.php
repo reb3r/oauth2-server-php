@@ -12,7 +12,7 @@ use RuntimeException;
 class AccessToken implements AccessTokenInterface
 {
     /**
-     * @var AccessTokenInterface
+     * @var AccessTokenStorageInterface
      */
     protected $tokenStorage;
 
@@ -144,12 +144,6 @@ class AccessToken implements AccessTokenInterface
                 return bin2hex($randomData);
             }
         }
-        if (function_exists('mcrypt_create_iv')) {
-            $randomData = mcrypt_create_iv(20, MCRYPT_DEV_URANDOM);
-            if ($randomData !== false && strlen($randomData) === 20) {
-                return bin2hex($randomData);
-            }
-        }
         if (@file_exists('/dev/urandom')) { // Get 100 bytes of random data
             $randomData = file_get_contents('/dev/urandom', false, null, 0, 20);
             if ($randomData !== false && strlen($randomData) === 20) {
@@ -184,7 +178,7 @@ class AccessToken implements AccessTokenInterface
      * the given hint, it MUST extend its search across all of its supported token types"
      *
      * @param $token
-     * @param null $tokenTypeHint
+     * @param string|null $tokenTypeHint
      * @throws RuntimeException
      * @return boolean
      */

@@ -22,6 +22,9 @@ class AuthorizeController implements AuthorizeControllerInterface
     /**
      * @var int
      */
+    /**
+     * @var string|null
+     */
     private $state;
 
     /**
@@ -443,7 +446,7 @@ class AuthorizeController implements AuthorizeControllerInterface
     /**
      * Convenience method to access the state
      *
-     * @return int
+     * @return string|null
      */
     public function getState()
     {

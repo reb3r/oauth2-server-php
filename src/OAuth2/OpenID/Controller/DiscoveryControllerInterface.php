@@ -13,9 +13,6 @@ interface DiscoveryControllerInterface
      *
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param
-     *            $is_authorized
-     * @param null $user_id
      * @return mixed
      */
     public function handleConfigurationDiscoveryRequest(RequestInterface $request, ResponseInterface $response);

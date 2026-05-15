@@ -23,7 +23,7 @@ class AuthorizationCode extends BaseAuthorizationCode implements AuthorizationCo
 
     /**
      * @param $params
-     * @param null $user_id
+     * @param mixed $user_id
      * @return array
      */
     public function getAuthorizeResponse($params, $user_id = null)
