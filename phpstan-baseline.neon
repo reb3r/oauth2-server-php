@@ -13,12 +13,6 @@ parameters:
 			path: src/OAuth2/Controller/AuthorizeController.php
 
 		-
-			message: '#^Parameter \#3 \$state of method OAuth2\\ResponseInterface\:\:setRedirect\(\) expects string\|null, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/Controller/AuthorizeController.php
-
-		-
 			message: '#^Result of && is always false\.$#'
 			identifier: booleanAnd.alwaysFalse
 			count: 1
@@ -81,12 +75,6 @@ parameters:
 		-
 			message: '#^Method OAuth2\\OpenID\\Controller\\AuthorizeController\:\:buildAuthorizeParameters\(\) should return array but empty return statement found\.$#'
 			identifier: return.empty
-			count: 1
-			path: src/OAuth2/OpenID/Controller/AuthorizeController.php
-
-		-
-			message: '#^Parameter \#3 \$state of method OAuth2\\ResponseInterface\:\:setRedirect\(\) expects string\|null, int given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/OAuth2/OpenID/Controller/AuthorizeController.php
 
