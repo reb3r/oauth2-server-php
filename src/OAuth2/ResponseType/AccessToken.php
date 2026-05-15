@@ -12,7 +12,7 @@ use RuntimeException;
 class AccessToken implements AccessTokenInterface
 {
     /**
-     * @var AccessTokenInterface
+     * @var AccessTokenStorageInterface
      */
     protected $tokenStorage;
 

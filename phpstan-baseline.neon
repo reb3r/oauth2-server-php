@@ -181,12 +181,6 @@ parameters:
 			path: src/OAuth2/Response.php
 
 		-
-			message: '#^Call to an undefined method OAuth2\\ResponseType\\AccessTokenInterface\:\:setAccessToken\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/OAuth2/ResponseType/AccessToken.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
@@ -213,12 +207,6 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$prefix of function uniqid expects string, int\<0, max\> given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/OAuth2/ResponseType/AccessToken.php
-
-		-
-			message: '#^Property OAuth2\\ResponseType\\AccessToken\:\:\$tokenStorage \(OAuth2\\ResponseType\\AccessTokenInterface\) does not accept OAuth2\\Storage\\AccessTokenInterface\.$#'
-			identifier: assign.propertyType
 			count: 1
 			path: src/OAuth2/ResponseType/AccessToken.php
 
@@ -272,12 +260,6 @@ parameters:
 			identifier: phpDoc.parseError
 			count: 1
 			path: src/OAuth2/ResponseType/AuthorizationCodeInterface.php
-
-		-
-			message: '#^Call to an undefined method OAuth2\\ResponseType\\AccessTokenInterface\:\:setAccessToken\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/OAuth2/ResponseType/JwtAccessToken.php
 
 		-
 			message: '#^Right side of && is always true\.$#'
