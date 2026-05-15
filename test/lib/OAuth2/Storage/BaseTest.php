@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class BaseTest extends TestCase
 {
-    public function provideStorage()
+    public static function provideStorage()
     {
         $memory = Bootstrap::getInstance()->getMemoryStorage();
         $sqlite = Bootstrap::getInstance()->getSqlitePdo();
