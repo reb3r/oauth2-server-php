@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         bootstrap="test/bootstrap.php"
->
+<phpunit backupGlobals="false" colors="true" processIsolation="false" stopOnFailure="false" bootstrap="test/bootstrap.php" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
   <testsuites>
     <testsuite name="Oauth2 Test Suite">
       <directory>./test/OAuth2/</directory>
     </testsuite>
   </testsuites>
-
-      <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">./src/OAuth2/</directory>
-        </include>
-    </coverage>
+  <source>
+    <include>
+      <directory suffix=".php">./src/OAuth2/</directory>
+    </include>
+  </source>
 </phpunit>
