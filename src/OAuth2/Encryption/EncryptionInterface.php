@@ -7,7 +7,7 @@ interface EncryptionInterface
     /**
      * @param $payload
      * @param $key
-     * @param null $algorithm
+     * @param mixed $algorithm
      * @return mixed
      */
     public function encode($payload, $key, $algorithm = null);
@@ -15,7 +15,7 @@ interface EncryptionInterface
     /**
      * @param $payload
      * @param $key
-     * @param null $algorithm
+     * @param mixed $algorithm
      * @return mixed
      */
     public function decode($payload, $key, $algorithm = null);

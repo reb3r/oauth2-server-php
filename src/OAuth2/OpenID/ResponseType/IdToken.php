@@ -57,7 +57,7 @@ class IdToken implements IdTokenInterface
 
     /**
      * @param array $params
-     * @param null $userInfo
+     * @param mixed $userInfo
      * @return array|mixed
      */
     public function getAuthorizeResponse($params, $userInfo = null)
@@ -124,7 +124,7 @@ class IdToken implements IdTokenInterface
 
     /**
      * @param $access_token
-     * @param null $client_id
+     * @param string|null $client_id
      * @return mixed|string
      */
     protected function createAtHash($access_token, $client_id = null)
@@ -140,7 +140,7 @@ class IdToken implements IdTokenInterface
 
     /**
      * @param array $token
-     * @param null $client_id
+     * @param string|null $client_id
      * @return mixed|string
      */
     protected function encodeToken(array $token, $client_id = null)

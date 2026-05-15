@@ -19,54 +19,6 @@ parameters:
 			path: src/OAuth2/Controller/AuthorizeController.php
 
 		-
-			message: '#^Left side of && is always false\.$#'
-			identifier: booleanAnd.leftAlwaysFalse
-			count: 1
-			path: src/OAuth2/Controller/ResourceController.php
-
-		-
-			message: '#^Parameter \#3 \$scope \(null\) of method OAuth2\\Controller\\ResourceController\:\:verifyResourceRequest\(\) should be compatible with parameter \$scope \(string\) of method OAuth2\\Controller\\ResourceControllerInterface\:\:verifyResourceRequest\(\)$#'
-			identifier: method.childParameterType
-			count: 1
-			path: src/OAuth2/Controller/ResourceController.php
-
-		-
-			message: '#^Call to function is_array\(\) with \*NEVER\* will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/OAuth2/Encryption/FirebaseJwt.php
-
-		-
-			message: '#^Default value of the parameter \#3 \$alg \(string\) of method OAuth2\\Encryption\\FirebaseJwt\:\:encode\(\) is incompatible with type null\.$#'
-			identifier: parameter.defaultValue
-			count: 1
-			path: src/OAuth2/Encryption/FirebaseJwt.php
-
-		-
-			message: '#^Negated boolean expression is always true\.$#'
-			identifier: booleanNot.alwaysTrue
-			count: 1
-			path: src/OAuth2/Encryption/FirebaseJwt.php
-
-		-
-			message: '#^Parameter \#3 \$alg of static method Firebase\\JWT\\JWT\:\:encode\(\) expects string, null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/Encryption/FirebaseJwt.php
-
-		-
-			message: '#^Parameter \#3 \$algo \(string\) of method OAuth2\\Encryption\\Jwt\:\:encode\(\) should be compatible with parameter \$algorithm \(null\) of method OAuth2\\Encryption\\EncryptionInterface\:\:encode\(\)$#'
-			identifier: method.childParameterType
-			count: 1
-			path: src/OAuth2/Encryption/Jwt.php
-
-		-
-			message: '#^Parameter \#3 \$allowedAlgorithms \(array\|bool\) of method OAuth2\\Encryption\\Jwt\:\:decode\(\) should be compatible with parameter \$algorithm \(null\) of method OAuth2\\Encryption\\EncryptionInterface\:\:decode\(\)$#'
-			identifier: method.childParameterType
-			count: 1
-			path: src/OAuth2/Encryption/Jwt.php
-
-		-
 			message: '#^Call to function is_null\(\) with null will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -77,36 +29,6 @@ parameters:
 			identifier: return.empty
 			count: 1
 			path: src/OAuth2/OpenID/Controller/AuthorizeController.php
-
-		-
-			message: '''
-				#^PHPDoc tag @param has invalid value \(
-				           \$is_authorized\)\: Unexpected token "\\n     \* ", expected type at offset 244 on line 7$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/OpenID/Controller/DiscoveryControllerInterface.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$user_id$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/OAuth2/OpenID/Controller/DiscoveryControllerInterface.php
-
-		-
-			message: '''
-				#^PHPDoc tag @param has invalid value \(
-				           \$is_authorized\)\: Unexpected token "\\n     \* ", expected type at offset 145 on line 6$#
-			'''
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/OAuth2/OpenID/Controller/JWKSetControllerInterface.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$user_id$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/OAuth2/OpenID/Controller/JWKSetControllerInterface.php
 
 		-
 			message: '#^Offset ''access_token'' does not exist on string\.$#'
@@ -127,42 +49,6 @@ parameters:
 			path: src/OAuth2/OpenID/Controller/LogoutController.php
 
 		-
-			message: '#^Parameter \#3 \$scope of method OAuth2\\Controller\\ResourceController\:\:verifyResourceRequest\(\) expects null, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/OpenID/Controller/UserInfoController.php
-
-		-
-			message: '#^Parameter \#2 \$client_id of method OAuth2\\OpenID\\RequestType\\LogoutToken\:\:encodeToken\(\) expects null, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/OpenID/RequestType/LogoutToken.php
-
-		-
-			message: '#^Parameter \#2 \$client_id of method OAuth2\\OpenID\\ResponseType\\IdToken\:\:createAtHash\(\) expects null, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/OpenID/ResponseType/IdToken.php
-
-		-
-			message: '#^Parameter \#2 \$client_id of method OAuth2\\OpenID\\ResponseType\\IdToken\:\:encodeToken\(\) expects null, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/OpenID/ResponseType/IdToken.php
-
-		-
-			message: '#^Parameter \#3 \$algorithm of method OAuth2\\Encryption\\EncryptionInterface\:\:decode\(\) expects null, array\<int, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/OpenID/ResponseType/IdToken.php
-
-		-
-			message: '#^Parameter \#3 \$algorithm of method OAuth2\\Encryption\\EncryptionInterface\:\:decode\(\) expects null, false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/OAuth2/OpenID/ResponseType/IdToken.php
-
-		-
 			message: '#^Strict comparison using \=\=\= between false and string\|null will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
 			count: 1
@@ -177,18 +63,6 @@ parameters:
 		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
-			count: 1
-			path: src/OAuth2/ResponseType/AccessToken.php
-
-		-
-			message: '#^Loose comparison using \!\= between null and ''refresh_token'' will always evaluate to true\.$#'
-			identifier: notEqual.alwaysTrue
-			count: 1
-			path: src/OAuth2/ResponseType/AccessToken.php
-
-		-
-			message: '#^Loose comparison using \=\= between null and ''refresh_token'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
 			count: 1
 			path: src/OAuth2/ResponseType/AccessToken.php
 

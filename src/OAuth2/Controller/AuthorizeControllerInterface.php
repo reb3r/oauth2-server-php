@@ -44,7 +44,7 @@ interface AuthorizeControllerInterface
      * @param RequestInterface $request
      * @param ResponseInterface $response
      * @param $is_authorized
-     * @param null $user_id
+     * @param mixed $user_id
      * @param string|null $sid
      * @return mixed
      */

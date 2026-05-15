@@ -178,7 +178,7 @@ class AccessToken implements AccessTokenInterface
      * the given hint, it MUST extend its search across all of its supported token types"
      *
      * @param $token
-     * @param null $tokenTypeHint
+     * @param string|null $tokenTypeHint
      * @throws RuntimeException
      * @return boolean
      */

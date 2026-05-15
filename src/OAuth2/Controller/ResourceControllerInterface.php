@@ -25,7 +25,7 @@ interface ResourceControllerInterface
      *
      * @param RequestInterface  $request  - Request object
      * @param ResponseInterface $response - Response object
-     * @param string            $scope
+     * @param string|null       $scope
      * @return mixed
      */
     public function verifyResourceRequest(RequestInterface $request, ResponseInterface $response, $scope = null);
