@@ -37,12 +37,6 @@ parameters:
 			path: src/OAuth2/Controller/ResourceController.php
 
 		-
-			message: '#^Variable \$clientId might not be defined\.$#'
-			identifier: variable.undefined
-			count: 5
-			path: src/OAuth2/Controller/TokenController.php
-
-		-
 			message: '#^Call to function is_array\(\) with \*NEVER\* will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
