@@ -29,5 +29,12 @@ interface IdTokenInterface extends ResponseTypeInterface
      */
     public function createIdToken($client_id, $userInfo, $nonce = null, $userClaims = null, $access_token = null, $sid = null);
 
+    /**
+     * Decode an id_token and return its claims.
+     *
+     * @param string $token
+     * @param string $client_id
+     * @return array<string, mixed>|false The decoded claims, or false if the token could not be decoded.
+     */
     public function decodeToken($token, $client_id = null);
 }

@@ -154,7 +154,7 @@ class IdToken implements IdTokenInterface
     /**
      * @param string $token
      * @param string $client_id
-     * @return mixed
+     * @return array<string, mixed>|false The decoded claims, or false if the token could not be decoded.
      */
     public function decodeToken($token, $client_id = null)
     {
