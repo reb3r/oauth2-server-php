@@ -230,7 +230,9 @@ class LogoutController implements LogoutControllerInterface
 
         if ($idTokenHint) {
             $decodedIdToken = $this->idToken->decodeToken($idTokenHint);
-            $clientIdTokenHint = $decodedIdToken['aud'] ?? null;
+            if (is_array($decodedIdToken) && isset($decodedIdToken['aud']) && is_string($decodedIdToken['aud'])) {
+                $clientIdTokenHint = $decodedIdToken['aud'];
+            }
         }
 
         if ($clientId && $clientIdTokenHint && $clientIdTokenHint !== $clientId) {

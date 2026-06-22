@@ -31,6 +31,12 @@ parameters:
 			path: src/OAuth2/OpenID/Controller/AuthorizeController.php
 
 		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: src/OAuth2/OpenID/Controller/LogoutController.php
+
+		-
 			message: '#^Offset ''access_token'' does not exist on string\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
@@ -45,6 +51,12 @@ parameters:
 		-
 			message: '#^Property OAuth2\\OpenID\\Controller\\LogoutController\:\:\$grantTypes \(array\<OAuth2\\GrantType\\GrantTypeInterface\>\) in isset\(\) is not nullable\.$#'
 			identifier: isset.property
+			count: 1
+			path: src/OAuth2/OpenID/Controller/LogoutController.php
+
+		-
+			message: '#^Right side of \|\| is always false\.$#'
+			identifier: booleanOr.rightAlwaysFalse
 			count: 1
 			path: src/OAuth2/OpenID/Controller/LogoutController.php
 
