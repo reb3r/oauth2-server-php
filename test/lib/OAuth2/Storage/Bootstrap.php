@@ -105,8 +105,10 @@ class Bootstrap
     {
         try {
             $redis->connect();
-        } catch (\Predis\CommunicationException $exception) {
-            // we were unable to connect to the redis server
+        } catch (\Predis\PredisException $exception) {
+            // we were unable to connect to the redis server. predis 1.x throws
+            // CommunicationException here, predis 3.x a StreamInitException;
+            // both extend PredisException, so catch the common base class.
             return false;
         }
 
