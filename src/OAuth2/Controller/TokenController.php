@@ -157,34 +157,31 @@ class TokenController implements TokenControllerInterface
         $grantType = $this->grantTypes[$grantTypeIdentifier];
 
         /**
-         * Retrieve the client information from the request
-         * ClientAssertionTypes allow for grant types which also assert the client data
-         * in which case ClientAssertion is handled in the validateRequest method
+         * Retrieve the client information from the request and validate the grant type.
+         *
+         * Self-asserting grant types (JWT bearer, client credentials) carry the
+         * client identity themselves; for everything else the dedicated
+         * ClientAssertionType validates the credentials and we cross-check that
+         * the grant type's own claimed client agrees.
          *
          * @see \OAuth2\GrantType\JWTBearer
          * @see \OAuth2\GrantType\ClientCredentials
          */
-        if (!$grantType instanceof ClientAssertionTypeInterface) {
+        if ($grantType instanceof ClientAssertionTypeInterface) {
+            if (!$grantType->validateRequest($request, $response)) {
+                return null;
+            }
+            $clientId = $grantType->getClientId();
+        } else {
             if (!$this->clientAssertionType->validateRequest($request, $response)) {
                 return null;
             }
             $clientId = $this->clientAssertionType->getClientId();
-        }
 
-        /**
-         * Retrieve the grant type information from the request
-         * The GrantTypeInterface object handles all validation
-         * If the object is an instance of ClientAssertionTypeInterface,
-         * That logic is handled here as well
-         */
-        if (!$grantType->validateRequest($request, $response)) {
-            return null;
-        }
+            if (!$grantType->validateRequest($request, $response)) {
+                return null;
+            }
 
-        if ($grantType instanceof ClientAssertionTypeInterface) {
-            $clientId = $grantType->getClientId();
-        } else {
-            // validate the Client ID (if applicable)
             if (!is_null($storedClientId = $grantType->getClientId()) && $storedClientId != $clientId) {
                 $response->setError(400, 'invalid_grant', sprintf('%s doesn\'t exist or is invalid for the client', $grantTypeIdentifier));
 

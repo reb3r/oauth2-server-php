@@ -3,14 +3,26 @@
 namespace OAuth2\OpenID\Controller;
 
 use OAuth2\Controller\AuthorizeController as BaseAuthorizeController;
+use OAuth2\OpenID\Storage\UserClaimsInterface;
 use OAuth2\RequestInterface;
 use OAuth2\ResponseInterface;
+use OAuth2\Storage\ClientInterface;
 
 /**
  * @see OAuth2\Controller\AuthorizeControllerInterface
  */
 class AuthorizeController extends BaseAuthorizeController implements AuthorizeControllerInterface
 {
+    /**
+     * The OpenID Connect flow reads user claims from the same storage object
+     * that handles client data. The runtime contract therefore requires the
+     * storage passed to this controller to implement both interfaces — the
+     * default storage implementations (Memory, Pdo) do.
+     *
+     * @var ClientInterface&UserClaimsInterface
+     */
+    protected $clientStorage;
+
     /**
      * @var mixed
      */

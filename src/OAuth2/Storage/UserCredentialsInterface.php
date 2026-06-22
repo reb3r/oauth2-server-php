@@ -26,9 +26,7 @@ interface UserCredentialsInterface
      * @param $password
      * Password to be check with.
      *
-     * @return
-     * TRUE if the username and password are valid, and FALSE if it isn't.
-     * Moreover, if the username and password are valid, and you want to
+     * @return bool TRUE if the username and password are valid, and FALSE if it isn't.
      *
      * @see http://tools.ietf.org/html/rfc6749#section-4.3
      *

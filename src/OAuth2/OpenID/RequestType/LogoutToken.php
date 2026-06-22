@@ -90,7 +90,7 @@ class LogoutToken implements LogoutTokenInterface
 
     /**
      * @param array $token
-     * @param null $client_id
+     * @param string|null $client_id
      * @return mixed|string
      */
     protected function encodeToken(array $token, $client_id = null)

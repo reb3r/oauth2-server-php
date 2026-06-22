@@ -8,8 +8,7 @@ namespace OAuth2\ResponseType;
 interface AuthorizationCodeInterface extends ResponseTypeInterface
 {
     /**
-     * @return
-     * TRUE if the grant type requires a redirect_uri, FALSE if not
+     * @return bool TRUE if the grant type requires a redirect_uri, FALSE if not
      */
     public function enforceRedirect();
 

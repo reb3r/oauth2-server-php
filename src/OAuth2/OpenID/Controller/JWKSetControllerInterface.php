@@ -12,9 +12,6 @@ interface JWKSetControllerInterface
      *
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param
-     *            $is_authorized
-     * @param null $user_id
      * @return mixed
      */
     public function handleJWKSetRequest(RequestInterface $request, ResponseInterface $response);

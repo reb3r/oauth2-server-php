@@ -67,7 +67,7 @@ class ResourceController implements ResourceControllerInterface
      *
      * @param RequestInterface  $request
      * @param ResponseInterface $response
-     * @param null              $scope
+     * @param string|null       $scope
      * @return bool
      */
     public function verifyResourceRequest(RequestInterface $request, ResponseInterface $response, $scope = null)

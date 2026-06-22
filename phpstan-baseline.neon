@@ -1,0 +1,331 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to function is_bool\(\) with bool will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/OAuth2/Controller/AuthorizeController.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: src/OAuth2/Controller/AuthorizeController.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: src/OAuth2/Controller/AuthorizeController.php
+
+		-
+			message: '#^Call to function is_null\(\) with null will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/OAuth2/OpenID/Controller/AuthorizeController.php
+
+		-
+			message: '#^Method OAuth2\\OpenID\\Controller\\AuthorizeController\:\:buildAuthorizeParameters\(\) should return array but empty return statement found\.$#'
+			identifier: return.empty
+			count: 1
+			path: src/OAuth2/OpenID/Controller/AuthorizeController.php
+
+		-
+			message: '#^Offset ''access_token'' does not exist on string\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/OAuth2/OpenID/Controller/LogoutController.php
+
+		-
+			message: '#^Offset ''refresh_token'' on string in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: src/OAuth2/OpenID/Controller/LogoutController.php
+
+		-
+			message: '#^Property OAuth2\\OpenID\\Controller\\LogoutController\:\:\$grantTypes \(array\<OAuth2\\GrantType\\GrantTypeInterface\>\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: src/OAuth2/OpenID/Controller/LogoutController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and string\|null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/OAuth2/Response.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: src/OAuth2/ResponseType/AccessToken.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: src/OAuth2/ResponseType/AccessToken.php
+
+		-
+			message: '#^Parameter \#1 \$prefix of function uniqid expects string, int\<0, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/OAuth2/ResponseType/AccessToken.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: src/OAuth2/ResponseType/AccessToken.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/OAuth2/ResponseType/AccessToken.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/OAuth2/ResponseType/AccessToken.php
+
+		-
+			message: '#^Parameter \#1 \$prefix of function uniqid expects string, int\<0, max\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/OAuth2/ResponseType/AuthorizationCode.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: src/OAuth2/ResponseType/JwtAccessToken.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\ClientAssertionType\\ClientAssertionTypeInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\Controller\\AuthorizeControllerInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\Controller\\ResourceControllerInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\Controller\\TokenControllerInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 2
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\OpenID\\Controller\\DiscoveryControllerInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\OpenID\\Controller\\JWKSetControllerInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\OpenID\\Controller\\LogoutControllerInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\OpenID\\Controller\\UserInfoControllerInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with OAuth2\\ResponseInterface will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 4
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with object will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Call to function is_null\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 2
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Method OAuth2\\Server\:\:getDiscoveryController\(\) should return OAuth2\\OpenID\\Controller\\DiscoveryController but returns OAuth2\\OpenID\\Controller\\DiscoveryControllerInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Method OAuth2\\Server\:\:getJWKSetController\(\) should return OAuth2\\OpenID\\Controller\\JWKSetController but returns OAuth2\\OpenID\\Controller\\JWKSetControllerInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Method OAuth2\\Server\:\:getLogoutController\(\) should return OAuth2\\OpenID\\Controller\\LogoutController but returns OAuth2\\OpenID\\Controller\\LogoutControllerInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Method OAuth2\\Server\:\:getTokenController\(\) should return OAuth2\\Controller\\TokenController but returns OAuth2\\Controller\\TokenControllerInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 3
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$jwkController$#'
+			identifier: parameter.notFound
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^PHPDoc tag @throws with type OAuth2\\InvalidArgumentException is not subtype of Throwable$#'
+			identifier: throws.notThrowable
+			count: 4
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Parameter \#2 \$token of method OAuth2\\OpenID\\Controller\\LogoutController\:\:setHandleTokenSession\(\) expects string, array\|true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 1
+			path: src/OAuth2/Server.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\JwtAccessToken\:\:getAccessToken\(\) should return array\|null but returns false\.$#'
+			identifier: return.type
+			count: 2
+			path: src/OAuth2/Storage/JwtAccessToken.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$encryptionUtil with type OAuth2\\Storage\\OAuth2\\Encryption\\EncryptionInterface is not subtype of native type OAuth2\\Encryption\\EncryptionInterface\|null\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: src/OAuth2/Storage/JwtAccessToken.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$publicKeyStorage with type OAuth2\\Storage\\OAuth2\\Encryption\\PublicKeyInterface is not subtype of native type OAuth2\\Storage\\PublicKeyInterface\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: src/OAuth2/Storage/JwtAccessToken.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$tokenStorage with type OAuth2\\Storage\\OAuth2\\Storage\\AccessTokenInterface is not subtype of native type OAuth2\\Storage\\AccessTokenInterface\|null\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: src/OAuth2/Storage/JwtAccessToken.php
+
+		-
+			message: '#^Parameter \$encryptionUtil of method OAuth2\\Storage\\JwtAccessToken\:\:__construct\(\) has invalid type OAuth2\\Storage\\OAuth2\\Encryption\\EncryptionInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/OAuth2/Storage/JwtAccessToken.php
+
+		-
+			message: '#^Parameter \$publicKeyStorage of method OAuth2\\Storage\\JwtAccessToken\:\:__construct\(\) has invalid type OAuth2\\Storage\\OAuth2\\Encryption\\PublicKeyInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/OAuth2/Storage/JwtAccessToken.php
+
+		-
+			message: '#^Parameter \$tokenStorage of method OAuth2\\Storage\\JwtAccessToken\:\:__construct\(\) has invalid type OAuth2\\Storage\\OAuth2\\Storage\\AccessTokenInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/OAuth2/Storage/JwtAccessToken.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\Memory\:\:getAuthorizationCode\(\) should return array\|null but returns false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Storage/Memory.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\Memory\:\:getClientDetails\(\) should return array but returns false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Storage/Memory.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\Memory\:\:getClientScope\(\) should return string\|null but returns false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Storage/Memory.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\Memory\:\:getUserClaims\(\) should return array but returns false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Storage/Memory.php
+
+		-
+			message: '#^Parameter \#2 \$timestamp of function date expects int\|null, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/OAuth2/Storage/Pdo.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\Redis\:\:getClientKey\(\) should return string\|false but returns null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Storage/Redis.php
+
+		-
+			message: '#^Method OAuth2\\Storage\\Redis\:\:getClientScope\(\) should return string\|null but returns false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/OAuth2/Storage/Redis.php
+
+		-
+			message: '#^Constant MCRYPT_DEV_URANDOM not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: src/OAuth2/UniqueToken.php
+
+		-
+			message: '#^Parameter \#1 \$prefix of function uniqid expects string, int\<0, max\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/OAuth2/UniqueToken.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/OAuth2/UniqueToken.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: src/OAuth2/UniqueToken.php

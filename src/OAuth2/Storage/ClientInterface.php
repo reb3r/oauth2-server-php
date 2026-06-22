@@ -40,8 +40,7 @@ interface ClientInterface
     /**
      * Get the scope associated with this client
      *
-     * @return
-     * STRING the space-delineated scope list for the specified client_id
+     * @return string|null the space-delineated scope list for the specified client_id
      */
     public function getClientScope($client_id);
 
@@ -56,9 +55,7 @@ interface ClientInterface
      * @param $grant_type
      * Grant type to be check with
      *
-     * @return
-     * TRUE if the grant type is supported by this client identifier, and
-     * FALSE if it isn't.
+     * @return bool TRUE if the grant type is supported by this client identifier, FALSE if it isn't.
      *
      * @ingroup oauth2_section_4
      */

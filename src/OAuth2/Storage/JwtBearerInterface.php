@@ -20,8 +20,7 @@ interface JwtBearerInterface
      * @param $client_id
      * Client identifier to be checked with.
      *
-     * @return
-     * STRING Return the public key for the client_id if it exists, and MUST return FALSE if it doesn't.
+     * @return string|false Return the public key for the client_id if it exists, and MUST return FALSE if it doesn't.
      */
     public function getClientKey($client_id, $subject);
 
@@ -43,8 +42,7 @@ interface JwtBearerInterface
      * @param $jti
      * The jti to match.
      *
-     * @return
-     * An associative array as below, and return NULL if the jti does not exist.
+     * @return array|null An associative array as below, and return NULL if the jti does not exist.
      * - issuer: Stored client identifier.
      * - subject: Stored subject.
      * - audience: Stored audience.
